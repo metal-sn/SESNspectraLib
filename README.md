@@ -4,7 +4,7 @@ This repository contains code that was used in [Liu et al. (2016)](http://arxiv.
 Common issues encountered in using SN spectral data include missing uncertainties and inhomogeneous measurements of the velocity for differen SN types. Our library inteds to address these issues. 
 
 At this time two pieces of code are provided: 
-- **FFT_smooth.pro**: IDL routine to smooth SN spectra by separating SN signal from noise in Fourier space. Should be used in absence of reduction-generated spectral uncertainty arrays, or to reaplce those in a comprehensive manner.
+- **FFT_smooth.pro**: IDL routine to smooth SN spectra by separating SN signal from noise in Fourier space. It should be used to evaluate the uncertainty of spectra in absence of reduction-generated spectral uncertainty arrays, or to reaplce those in a comprehensive manner for a large and diverse dataset.
 - **Ic_conv_Icbl_MCMC.py**: Python module to measure the absorption velocity of SN Ic-bl from the Fe I 5169 spectral feature. This code provides and implements a method to measure the spectral velocity of SN Ic-bl consistently with what is usually done for oher subtypes, for fair and meanungful comparisons, enabling the measurement of the Fe I 5169 blue-shift despite the fact that this feature is blended for Ic-bl. The code measures the blue-shift of Fe I 5169 blue-shift by matching the SN Ic-bl spectrum under consideration to a broadened and blueshifted SN Ic template, at similar phases. We use it for Fe I 5169 but it can be used for other features as well.
 
 
