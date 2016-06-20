@@ -1,11 +1,21 @@
-pro discreteFT_0703, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_inv,num_try_vel
+PRO FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_inv,num_try_vel
 
-; FFT smoothing 
-; w and f are original wavelength and flux
-; w_ln_bin and f_bin are wavelength and flux used to FFT
-; num_bin is the number in w_ln_bin or f_bin
-; f_bin_ft_smooth_inv is FFT smoothed flux
-; num_try_vel is noise cutting velocity
+; NAME:
+;    FFT_SMOOTH
+; PURPOSE:
+;    Derive uncertainty arrary of spectra from spectra themselves
+; CALLING SEQUENCE:
+;   FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_inv,num_try_vel
+; INPUTS:
+;   w -- original wavelength
+;   f -- original flux
+;   noise_cut_vel -- 
+; OUTPUTS:
+;   w_ln_bin -- input wavelength for FFT
+;   f_bin -- input flux for FFT
+;   num_bin -- number of bins in w_ln_bin or f_bin
+;   f_bin_ft_smooth_inv -- FFT smoothed flux
+;   num_try_vel -- noise cutting velocity
 
   w_ln=alog(w)                  ; convert to log(w) space
   num=n_elements(w_ln)
@@ -37,8 +47,7 @@ pro discreteFT_0703, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smoo
       ;print, 'number of fluxes after FT: ', n_elements(f_bin_ft)
       ;print, 'number of frequency in FT: ',n_elements(freq)
 
-;filtering spectra
-      
+;filtering spectra    
       num_upper=max(where(1.0/freq[0:num_bin-1]*3.0e5*binsize GT noise_cut_vel))
       num_lower=max(where(1.0/freq[0:num_bin-1]*3.0e5*binsize GT 1.0e5, num_num_lower))
       f_bin_ft_line=fltarr(num_upper)
@@ -95,7 +104,6 @@ pro discreteFT_0703, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smoo
       endif
 
       if max(delta) lt 0 then begin
-         cd,'/home/users/yl1260/regenerateSNID/spec_FFT'
          print, 'try another guess value'
          return
       endif
