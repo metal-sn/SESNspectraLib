@@ -3,7 +3,7 @@ PRO FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_in
 ; NAME:
 ;    FFT_SMOOTH
 ; PURPOSE:
-;    Derive uncertainty arrary of spectra from spectra themselves
+;    Smooth spectra by separating SN signal from noise in Fourier space
 ; CALLING SEQUENCE:
 ;   FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_inv,num_try_vel
 ; INPUTS:
