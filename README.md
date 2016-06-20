@@ -1,7 +1,7 @@
 # SESNspectraLib
 
 This repository contains code that was used in [Liu et al. (2016)](http://arxiv.org/abs/1510.08049) and [Modjaz et al. (2016)](http://arxiv.org/abs/1509.07124) to process Stripped Envelope Supenova (SESNe) spectra. 
-Common issues encountered in using SN spectral data include missing uncertainties and inhomogeneous measurements of the velocity for differen SN types. Our library inteds to address these issues. 
+Common issues encountered in using SN spectral data include missing uncertainties and inhomogeneous measurements of the velocity for differen SN types. Our library intends to address these issues. 
 
 At this time two pieces of code are provided: 
 - **FFT_smooth.pro**: IDL routine to smooth SN spectra by separating SN signal from noise in Fourier space. It should be used to evaluate the uncertainty of spectra in absence of reduction-generated spectral uncertainty arrays, or to reaplce those in a comprehensive manner for a large and diverse dataset [Liu et al. (2016)](http://arxiv.org/abs/1510.08049).
