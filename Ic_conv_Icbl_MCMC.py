@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
-# run all spectra of all SNe or a spectrum of a SN (change L88 and L112) ; for Icbl; for Fe and Si
-# change prior (L82), initial values (L76), initial template fitting region (L79)
-# change saved figure directory (L107) and saved data directory (L143)
-# to fully reproduce plots, save initial template fit region and prior as well - 2015.8.13
-# change uniform prior of wavelength-range parameter to Gaussian; to separate data from function, write changedir, readdata, runMCMC - 2015.8.16
-#%cd "/Users/yuqianliu/TemplateFit"
+# readin: flattened Ic-bl spectrum and the corresponding uncertainty array, SNe Ic template
+# output: marginalized distribution of model parameters, including but not limited to absorption velocity
+# note: prior and initial values of model parameters, and initial template fitting region can be changed as needed
 
 import sys
 import os
@@ -35,6 +32,7 @@ def changedir(sn_name):
     else:
         os.chdir('/Users/yuqianliu/Desktop/regenerateSNID/'+sn_name+'/spec/')
 
+# read in flattened Ic-bl spectrum and the corresponding uncertainty array, SNe Ic template
 def readdata(spec, phase):
     phase_use=np.int(np.round(np.double(phase)))
     print 'phase in use',phase_use
@@ -51,10 +49,12 @@ def readdata(spec, phase):
         phase_temp_use = phase_use/2*2
     print 'phase in Ic mean template', phase_temp_use
         
+    # read in Ic template            
     s=readsav('/Users/yuqianliu/Desktop/snidmeanspectra/templates-2.0_myself/forConvolution/meanspecIc_'+str(phase_temp_use)+'.sav') # read in Ic template
     wlog_input=s.wlog[np.where((s.wlog > 4400) & (s.wlog < 9000))]
     fmean_input=s.fmean[np.where((s.wlog > 4400) & (s.wlog < 9000))]
     
+    # read in Icbl spectrum and uncertainty array
     s2=readsav(spec+'-flat.sav') # read in Icbl spectrum
     x_flat=s2.wavelog_input[0:1024]       
     y_flat_sm=s2.flatflux_input_sm
@@ -63,6 +63,7 @@ def readdata(spec, phase):
 
     return wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err   
     
+# fit SN Ic-bl spectrum to a convolved and blueshifted SN Ic template
 def fittemplate(p,fmean_input,wlog_input,lx,ly,ly_err, plot=False):
     stre,scale1,v,sig=p[3], p[2]*100,-p[1]*1000,p[0]*10
     w_lower=lx[0]+scale1
@@ -94,6 +95,7 @@ def fittemplate(p,fmean_input,wlog_input,lx,ly,ly_err, plot=False):
             
     return chisq
     
+# log prior        
 def logprior (p):
     s=p[0]
     v=p[1]
@@ -105,14 +107,17 @@ def logprior (p):
         return np.log(np.exp( - (scale1 - 1.1)**2 / (2 * 0.37**2) ))
     return -np.inf
 
+# log likelihood                    
 def logl(p,x,y,s,fmean_input,wlog_input):
     return  -np.log(s)-0.5*(fittemplate(p,fmean_input,wlog_input,x,y,s))
     
+# full log probability     
 def logp(p,x,y,s,fmean_input,wlog_input):
     lgl= logl(p,x,y,s,fmean_input,wlog_input)
     #print lgl
     return np.sum(logprior(p)+lgl)
 
+# sample probability distribution using package emcee, and get marginalized distribution of model parameters  
 def runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0,p00,prior,spec,posterior_save='no',plot_save='no',file_save='no'):
     ndim, nwalkers = 4, 6*2
     
@@ -146,10 +151,12 @@ def runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0,p00,pr
     value_50=[np.percentile(samplerFe.chain[:,:,0],[50])[0],np.percentile(samplerFe.chain[:,:,1],[50])[0], # median values
             np.percentile(samplerFe.chain[:,:,2],[50])[0],np.percentile(samplerFe.chain[:,:,3],[50])[0]]
 
+    # save marginalized distribution of model parameters
     if posterior_save !='no':
         with open(posterior_save,'w') as f:
             pkl.dump(samplerFe,f)
     
+    # save corner plots
     if plot_save != 'no':  
         pp = PdfPages(plot_save)
                 
@@ -165,6 +172,7 @@ def runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0,p00,pr
 
         pp.close()
 
+    # save initial template fit region, mean acceptance fraction, initial values for parameters and others
     if file_save != 'no':   
         f=open(file_save,'w')        
         f.write('region: '+str(x0)+' to find initial template fit region: '+str(np.array([round(Fe_lower),round(Fe_upper)]))+'\n')
