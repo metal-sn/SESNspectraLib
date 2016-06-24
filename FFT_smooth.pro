@@ -1,21 +1,19 @@
-PRO FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_inv,num_try_vel
+PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 
 ; NAME:
 ;    FFT_SMOOTH
 ; PURPOSE:
 ;    Smooth spectra by separating SN signal from noise in Fourier space
 ; CALLING SEQUENCE:
-;   FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_inv,num_try_vel
+;   FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ; INPUTS:
-;   w -- original wavelength
-;   f -- original flux
-;   noise_cut_vel -- 
+;   w = original wavelength
+;   f = original flux
+;   cut_vel = in Fourier space, cut all magnitudes with velocities smaller than cut_vel
 ; OUTPUTS:
-;   w_ln_bin -- input wavelength for FFT
-;   f_bin -- input flux for FFT
-;   num_bin -- number of bins in w_ln_bin or f_bin
-;   f_bin_ft_smooth_inv -- FFT smoothed flux
-;   num_try_vel -- noise cutting velocity
+;   w_ft = wavelength corresponding to FFT smoothed flux
+;   f_ft = FFT smoothed flux
+;   sep_vel = velocity separating spectral signal from the noise
 
   w_ln=alog(w)                  ; convert to log(w) space
   num=n_elements(w_ln)
@@ -23,6 +21,7 @@ PRO FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_in
   binsize = (w_ln[num-1]-w_ln[num-2])
       ;print, 'largest velocity shift (km/s) in ln(w): ',binsize_noise,binsize_noise*3.0e5
       ;print, 'smallest velocity shift (km/s) in ln(w): ',binsize, binsize*3.0e5
+      f = f/(moment(f))[0]
       f_bin = binspec(w_ln,f,min(w_ln),max(w_ln),binsize,w_ln_bin) ;bin to same sampling interval in log(w) space
       f_bin=f_bin(where(f_bin NE 0))
       w_ln_bin=w_ln_bin(where(f_bin NE 0))
@@ -48,7 +47,7 @@ PRO FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_in
       ;print, 'number of frequency in FT: ',n_elements(freq)
 
 ;filtering spectra    
-      num_upper=max(where(1.0/freq[0:num_bin-1]*3.0e5*binsize GT noise_cut_vel))
+      num_upper=max(where(1.0/freq[0:num_bin-1]*3.0e5*binsize GT cut_vel))
       num_lower=max(where(1.0/freq[0:num_bin-1]*3.0e5*binsize GT 1.0e5, num_num_lower))
       f_bin_ft_line=fltarr(num_upper)
       if num_num_lower lt 3 then num_lower=min([num_bin/100,10])
@@ -108,7 +107,7 @@ PRO FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_in
          return
       endif
       num_try=min(where(delta LT 0)) 
-      num_try_vel=1.0/freq(num_try)*3.0e5*binsize
+      sep_vel=1.0/freq(num_try)*3.0e5*binsize
 
       f_bin_ft_smooth=f_bin_ft/num_bin
       for j=1L, num_bin do begin
@@ -121,5 +120,8 @@ PRO FFT_smooth, w, f, noise_cut_vel, w_ln_bin, f_bin, num_bin,f_bin_ft_smooth_in
          endif
       endfor     
       f_bin_ft_smooth_inv=float(fft(f_bin_ft_smooth,1))
+      
+w_ft = exp(w_ln_bin)
+f_ft = f_bin_ft_smooth_inv
 
 END
