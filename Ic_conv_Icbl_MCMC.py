@@ -16,46 +16,23 @@ import time
 from matplotlib.backends.backend_pdf import PdfPages
 import triangle 
 import emcee
-import pylabsetup
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 import pickle as pkl
 
 t1 = time.time()
 
-def changedir(sn_name):
-    if sn_name == 'sn1933J':
-        os.chdir('/Users/yuqianliu/Desktop/regenerateSNID/'+sn_name+'/spec/lick')
-    elif sn_name == 'sn2007ru':
-        os.chdir('/Users/yuqianliu/Desktop/regenerateSNID/'+sn_name+'_Sahu')
-    elif sn_name == 'sn2010bh':
-        os.chdir('/Users/yuqianliu/Desktop/regenerateSNID/'+sn_name+'/spec/Chornock')
-    else:
-        os.chdir('/Users/yuqianliu/Desktop/regenerateSNID/'+sn_name+'/spec/')
+
 
 # read in flattened Ic-bl spectrum and the corresponding uncertainty array, SNe Ic template
-def readdata(spec, phase):
-    phase_use=np.int(np.round(np.double(phase)))
-    print 'phase in use',phase_use
+def readdata(spec, template):
 
-    if phase_use <= -10:
-        phase_temp_use = -10
-    elif phase_use == 62 or phase_use == 63:
-        phase_temp_use=60 
-    elif phase_use == 64 or phase_use == 65:
-        phase_temp_use = 66 
-    elif 72 <= phase_use:
-        phase_temp_use = 72
-    else: 
-        phase_temp_use = phase_use/2*2
-    print 'phase in Ic mean template', phase_temp_use
-        
     # read in Ic template            
-    s=readsav('/Users/yuqianliu/Desktop/snidmeanspectra/templates-2.0_myself/forConvolution/meanspecIc_'+str(phase_temp_use)+'.sav') # read in Ic template
+    s=readsav(template) # read in Ic template
     wlog_input=s.wlog[np.where((s.wlog > 4400) & (s.wlog < 9000))]
     fmean_input=s.fmean[np.where((s.wlog > 4400) & (s.wlog < 9000))]
     
     # read in Icbl spectrum and uncertainty array
-    s2=readsav(spec+'-flat.sav') # read in Icbl spectrum
+    s2=readsav(spec) # read in Icbl spectrum
     x_flat=s2.wavelog_input[0:1024]       
     y_flat_sm=s2.flatflux_input_sm
     y_flat=s2.flatflux_input
@@ -83,7 +60,7 @@ def fittemplate(p,fmean_input,wlog_input,lx,ly,ly_err, plot=False):
     
     if plot:
         pl.figure(figsize=(15,15))
-        pl.plot(x_flat,y_flat,'k',alpha=0.5,label=r"$t=$%.2f days"%(float(phase)))
+        #pl.plot(x_flat,y_flat,'k',alpha=0.5,label=r"$t=$%.2f days"%(float(0.0)))
         pl.plot(lx_new,ly_new,'k')
         pl.plot(lx_new,f2,'r',linewidth=3)
         pl.plot(lx[0],ly[0],'o',color='blue',)
@@ -196,55 +173,32 @@ def runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0,p00,pr
     print np.percentile(samplerFe.chain[:,:,2],[16,50,84]) # 16th, 50th, 84th percentiles of the scale/100
     print np.percentile(samplerFe.chain[:,:,3],[16,50,84]) # 16th, 50th, 84th percentiles of the stretch        
 
-                                
+
+def conv(spec, template):
+                                                                                
+    wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err=readdata(spec, template)
+    if np.mean(y_flat[np.where(x_flat < 4500)]) !=0 and np.mean(y_flat[np.where(x_flat > 5100)]) !=0: 
+        runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0Fe,p0Fe,priorFe,spec,posterior_save=spec+'-Fe.p',plot_save=spec+'-Fe.pdf',file_save=spec+'-Fe.dat')                      
+    else:
+        print("wavelength range doesn't match")                
+
 # initial parameter values
-p0Fe=np.array([1,35,1,1]) #sigma/10, v/1000, wave-range/100, y-amplitude
-p0Si=np.array([1,8,1,1])
+p0Fe=np.array([1,11,1,1.5]) #sigma/10, v/1000, wave-range/100, y-amplitude
 # region to find initial template fit region
-x0Fe=np.array([4000,4500,4500,4900])                    
-x0Si=np.array([4900,5300,6200,6600])  
+x0Fe=np.array([4200,4800,5000,5600])                    
 # prior
-priorFe=np.array([0,5,0,40,0,4,0,3])
-priorSi=np.array([0,5,0,25,0,4,0,3])                  
+priorFe=np.array([0,5,0,40,0,4,0,3]) # to remove 0 and 4
 
-filename=open("/Users/yuqianliu/Desktop/regenerateSNID/vabs/TypeIcbl",'r').read()
-sn_name_type_list=filename.split('\n')
+conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
 
-# [0:] run all SNe, [0:1] run the first SN
-for sn_name_type in sn_name_type_list[12:13]:
-    if sn_name_type != '':
-        sn_name=sn_name_type.split()[0] # within one row
-        print sn_name
-        #sys.exit()  
-                      
-        changedir(sn_name)    
-                        
-        spec_phase_list=open('Spec.JD.phases').read()
-        spec_phase_list=spec_phase_list.split('\n')
-        if spec_phase_list[0][0] == '#':
-            spec_phase_list=spec_phase_list[2:] # exclude the first two lines
-            
-        # [0:] run all spectra, [0:1] run the first spectrum        
-        for spec_phase in spec_phase_list[1:2]:
-            if spec_phase != '': # set this so that there is no such error 'list index out of range' for the following two lines
-                spec=spec_phase.split()[0]
-                phase=spec_phase.split()[2]
-                print spec
-                print 'original phase',phase
-                #sys.exit()
-                
-                if np.double(phase) < 76:
-                    wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err=readdata(spec, phase)
-                                    
-                    # Fe MCMC
-                    # check if the spectrum contains the Fe region
-                    if np.mean(y_flat[np.where(x_flat < 4500)]) !=0 and np.mean(y_flat[np.where(x_flat > 5100)]) !=0: 
-                        runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0Fe,p0Fe,priorFe,spec,posterior_save=spec+'-Fe.p',plot_save=spec+'-Fe.pdf',file_save=spec+'-Fe.dat')                      
-                    # Si MCMC
-                    #if np.mean(y_flat[np.where(x_flat < 5000)]) !=0 and np.mean(y_flat[np.where(x_flat > 6400)]) !=0: 
-                     #   runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0Si,p0Si,priorSi,spec,plot_save=spec+'-Si.pdf',file_save=spec+'-Si.dat')                      
-                    
+#spec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
+#template = 'meanspecIc_0.sav'
+#wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err=readdata(spec, template)
+#if np.mean(y_flat[np.where(x_flat < 4500)]) !=0 and np.mean(y_flat[np.where(x_flat > 5100)]) !=0: 
+#    runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0Fe,p0Fe,priorFe,spec,posterior_save=spec+'-Fe.p',plot_save=spec+'-Fe.pdf',file_save=spec+'-Fe.dat')                      
+#else:
+#    print("wavelength range doesn't match")     
+#        
 t2 = time.time()
 print 'minimization took {} seconds'.format(t2 - t1)
-os.chdir('/Users/yuqianliu/TemplateFit')
 
