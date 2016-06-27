@@ -14,7 +14,7 @@ from scipy.interpolate import interp1d
 from scipy.optimize import minimize 
 import time
 from matplotlib.backends.backend_pdf import PdfPages
-import triangle 
+import corner 
 import emcee
 from matplotlib.ticker import MultipleLocator, FormatStrFormatter
 import pickle as pkl
@@ -143,7 +143,7 @@ def runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0,p00,pr
         pl.close() # very important to close figures otherwise may comsume too much memory
 
         #samplerFe = pkl.load( open(posterior_save , "rb" ) ) #this line shows how to use the stored pickle file to plot posterior distribution        
-        triangle.corner(samplerFe.flatchain,truths=value_50,labels=[r"$\sigma$ [10 \AA]", "$v$ [10$^3$ km s$^{-1}$]", "$w$ [10$^2$ \AA]", "$a$"])    
+        corner.corner(samplerFe.flatchain,truths=value_50,labels=[r"$\sigma$ [10 \AA]", "$v$ [10$^3$ km s$^{-1}$]", "$w$ [10$^2$ \AA]", "$a$"])    
         pp.savefig()
         pl.close() # very important to close figures otherwise may comsume too much memory
 
@@ -182,23 +182,26 @@ def conv(spec, template):
     else:
         print("wavelength range doesn't match")                
 
-# initial parameter values
-p0Fe=np.array([1,11,0.1,1.5]) #sigma/10, v/1000, wave-range/100, y-amplitude
-# region to find initial template fit region
-x0Fe=np.array([4200,4800,5000,5600])                    
-# prior
-priorFe=np.array([0,5,0,40,0,4,0,3]) # to remove 0 and 4
 
-conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
-
-#spec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
-#template = 'meanspecIc_0.sav'
-#wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err=readdata(spec, template)
-#if np.mean(y_flat[np.where(x_flat < 4500)]) !=0 and np.mean(y_flat[np.where(x_flat > 5100)]) !=0: 
-#    runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0Fe,p0Fe,priorFe,spec,posterior_save=spec+'-Fe.p',plot_save=spec+'-Fe.pdf',file_save=spec+'-Fe.dat')                      
-#else:
-#    print("wavelength range doesn't match")     
-#        
-t2 = time.time()
-print 'minimization took {} seconds'.format(t2 - t1)
+if __name__ == '__main__':
+        
+    # initial parameter values
+    p0Fe=np.array([1,11,0.1,1.5]) #sigma/10, v/1000, wave-range/100, y-amplitude
+    # region to find initial template fit region
+    x0Fe=np.array([4200,4800,5000,5600])                    
+    # prior
+    priorFe=np.array([0,5,0,40,0,4,0,3]) # to remove 0 and 4
+    
+    conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
+    
+    #spec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
+    #template = 'meanspecIc_0.sav'
+    #wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err=readdata(spec, template)
+    #if np.mean(y_flat[np.where(x_flat < 4500)]) !=0 and np.mean(y_flat[np.where(x_flat > 5100)]) !=0: 
+    #    runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0Fe,p0Fe,priorFe,spec,posterior_save=spec+'-Fe.p',plot_save=spec+'-Fe.pdf',file_save=spec+'-Fe.dat')                      
+    #else:
+    #    print("wavelength range doesn't match")     
+    #        
+    t2 = time.time()
+    print 'minimization took {} seconds'.format(t2 - t1)
 
