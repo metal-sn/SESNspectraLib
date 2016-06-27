@@ -29,8 +29,9 @@ X0Fe = np.array([4200,4800,5000,5600])
 PriorFe = np.array([0,5,0,40,0,4,0,3])
 # to remove 0 and 4
     
-# read in flattened Ic-bl spectrum and the corresponding uncertainty array, SNe Ic template
 def readdata(spec, template):
+    ''' read in flattened Ic-bl spectrum and the corresponding 
+    uncertainty array,  SNe Ic template '''
 
     # read in Ic template            
     s = readsav(template) # read in Ic template
@@ -46,8 +47,8 @@ def readdata(spec, template):
 
     return wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err   
     
-# fit SN Ic-bl spectrum to a convolved and blueshifted SN Ic template
 def fittemplate(p,fmean_input,wlog_input,lx,ly,ly_err, plot = False):
+    ''' fit SN Ic-bl spectrum to a convolved and blueshifted SN Ic template'''
     stre,scale1,v,sig = p[3], p[2]*100,-p[1]*1000,p[0]*10
     w_lower = lx[0]+scale1
     w_upper = lx[-1]-scale1
@@ -83,8 +84,8 @@ def fittemplate(p,fmean_input,wlog_input,lx,ly,ly_err, plot = False):
             
     return chisq
     
-# log prior        
 def logprior (p):
+    # log prior        
     s=p[0]
     v=p[1]
     scale1=p[2]
@@ -97,24 +98,26 @@ def logprior (p):
         return np.log(np.exp( - (scale1 - 0.1)**2 / (2 * 0.5**2) ))
     return -np.inf
 
-# log likelihood                    
 def logl(p, x, y, s, fmean_input, wlog_input):
+    # log likelihood                    
     return  -np.log(s) - 0.5 * (fittemplate(p, fmean_input, wlog_input,
                                             x, y, s))
     
-# full log probability     
 def logp(p, x, y, s, fmean_input, wlog_input):
+    # full log probability     
     lgl= logl(p, x, y, s, fmean_input, wlog_input)
     #print lgl
     return np.sum(logprior(p) + lgl)
 
-# sample probability distribution using package emcee, and get marginalized distribution of model parameters  
 def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat,
             y_flat_err, spec, 
             x0 = X0Fe, p00 = P0Fe, prior=PriorFe,
             posterior_save = False,
             plot_save = False, file_save = False):
-    ndim, nwalkers = 4, 6*2
+    ''' sample probability distribution using package emcee, 
+    and get marginalized distribution of model parameters  '''
+
+    ndim, nwalkers = 4, 6 * 2
     
     Fe_lower_inds = (x_flat > x0[0]) * (x_flat < x0[1])
     Fe_lower_x_flat = x_flat[Fe_lower_inds]
