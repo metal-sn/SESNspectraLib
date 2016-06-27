@@ -81,7 +81,7 @@ def logprior (p):
     #scale2=p[3]
     if s>priorFe[0] and s<priorFe[1] and v>priorFe[2] and v<priorFe[3] and  stre>priorFe[6] and stre<priorFe[7]:# and scale1>priorFe[4] and scale1<priorFe[5]:
         #return 0.0+np.log(1/(0.33 * np.sqrt(2 * np.pi)) * np.exp( - (scale1 - 1)**2 / (2 * 0.33**2) ))
-        return np.log(np.exp( - (scale1 - 1.1)**2 / (2 * 0.37**2) ))
+        return np.log(np.exp( - (scale1 - 0.1)**2 / (2 * 0.5**2) ))
     return -np.inf
 
 # log likelihood                    
@@ -102,12 +102,12 @@ def runMCMC(wlog_input,fmean_input, x_flat,y_flat_sm,y_flat,y_flat_err,x0,p00,pr
     Fe_lower_x_flat=x_flat[Fe_lower_inds]
     Fe_lower_y_flat_sm=y_flat_sm[Fe_lower_inds]
     #Fe_lower_y_flat=y_flat[Fe_lower_inds]                        
-    Fe_lower=np.max(Fe_lower_x_flat[np.where(Fe_lower_y_flat_sm == np.max(Fe_lower_y_flat_sm))])-100
+    Fe_lower=np.min(Fe_lower_x_flat[np.where(Fe_lower_y_flat_sm == np.max(Fe_lower_y_flat_sm))])+100
     Fe_upper_inds=(x_flat>x0[2]) * (x_flat<x0[3])
     Fe_upper_x_flat=x_flat[Fe_upper_inds]
     Fe_upper_y_flat_sm=y_flat_sm[Fe_upper_inds]
     #Fe_upper_y_flat=y_flat[Fe_upper_inds]
-    Fe_upper=np.min(Fe_upper_x_flat[np.where(Fe_upper_y_flat_sm == np.max(Fe_upper_y_flat_sm))])+100
+    Fe_upper=np.max(Fe_upper_x_flat[np.where(Fe_upper_y_flat_sm == np.max(Fe_upper_y_flat_sm))])-100
                         
     Fex=x_flat[np.where((x_flat>Fe_lower) & (x_flat<Fe_upper))]
     Fey=y_flat[np.where((x_flat>Fe_lower) & (x_flat<Fe_upper))]
@@ -183,7 +183,7 @@ def conv(spec, template):
         print("wavelength range doesn't match")                
 
 # initial parameter values
-p0Fe=np.array([1,11,1,1.5]) #sigma/10, v/1000, wave-range/100, y-amplitude
+p0Fe=np.array([1,11,0.1,1.5]) #sigma/10, v/1000, wave-range/100, y-amplitude
 # region to find initial template fit region
 x0Fe=np.array([4200,4800,5000,5600])                    
 # prior
