@@ -18,5 +18,6 @@ IDL> FFT_smooth, w, f, 1000, w_ft, f_ft, sep_vel
 IDL> plot, w, f
 IDL> oplot, w_ft, f_ft, color=250
 ```
+![alt tag](https://github.com/nyusngroup/SESNspectraLib/blob/master/example_IDL_plot.png)
 
 If you use data products in this repository, please <b>cite</b> related references listed above.
