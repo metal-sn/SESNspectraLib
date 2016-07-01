@@ -11,7 +11,7 @@ At this time two pieces of code are provided:
 NOTE: When not specified otherwise (e.g. Ic_conv_Icbl) our code can be used on any medium resolution spectra of SNe of any type, although it is deisgned for and tested on SESN.
 
 ### Examples
-Following code is an example of **FFT_smooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://arxiv.org/abs/1510.08049).
+Following code is an example of **FFT_smooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://arxiv.org/abs/1510.08049):
 ```
 IDL> readcol, 'sn2004gq-20041212-z-bl.flm', w, f
 IDL> FFT_smooth, w, f, 1000, w_ft, f_ft, sep_vel
@@ -20,8 +20,12 @@ IDL> oplot, w_ft, f_ft, color=250
 ```
 ![alt tag](https://github.com/nyusngroup/SESNspectraLib/blob/master/example_IDL_plot.png)
 
-Following code is an example of **Ic_conv_Icbl_MCMC.py** in Python, which will produce  
-
+Following code is an example of **Ic_conv_Icbl_MCMC.py** in Python:
+```
+>>> import Ic_conv_Icbl_MCMC as Ic_conv_Icbl
+>>> Ic_conv_Icbl.conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
+```
+![alt tag](https://github.com/nyusngroup/SESNspectraLib/blob/master/10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf)
 
 
 If you use data products in this repository, please <b>cite</b> related references listed above.
