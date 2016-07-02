@@ -27,6 +27,13 @@ Following code is an example of **Ic_conv_Icbl_MCMC.py** in Python, which will p
 ```
 >>> import Ic_conv_Icbl_MCMC as Ic_conv_Icbl
 >>> Ic_conv_Icbl.conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
+Mean acceptance fraction: 0.560
+16th, 50th, 84th percentiles of marginalized distributionof model parameters
+[ 11.03473214  11.31697052  11.57283873] for v/1000 in km/s
+[ 4.2355698   4.54219278  4.86659571] for sigma/1000 in km/s
+[ 1.31041678  1.40845969  1.50139907] for amplitude
+[ 0.54435987  2.45664605  6.51081607] for wave-range in angstrom
+minimization took 47.1844210625 seconds
 ```
 
 
