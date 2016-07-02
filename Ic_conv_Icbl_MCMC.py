@@ -59,11 +59,11 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
 
     # assign values to parameters of absorption velocity, width of absorption
     # feature, amplitude, and wavelength-range
-    v, sig, amplitude, w_range = -p[0]*1000, p[1]*10, p[2], p[3]
+    v, sig, amplitude, w_range = -p[0] * 1000, p[1] * 10, p[2], p[3]
 
     # template fit region
-    w_lower = lx[0]+w_range
-    w_upper = lx[-1]-w_range
+    w_lower = lx[0] + w_range
+    w_upper = lx[-1] - w_range
     inds = (lx > w_lower) * (lx < w_upper)
     ly_new = ly[inds]
     ly_err_new = ly_err[inds]
@@ -71,13 +71,13 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
 
     # Gaussian convolution
     b = gaussian(300, sig)
-    thisy = filters.convolve1d(amplitude*fmean_input, b/b.sum())
+    thisy = filters.convolve1d(amplitude * fmean_input, b / b.sum())
     # blue shifted
-    beta = v/299792.458
-    doppler = np.sqrt((1+beta)/(1-beta))
-    f2 = interp1d(wlog_input*doppler, thisy, bounds_error=False,
+    beta = v / 299792.458
+    doppler = np.sqrt((1 + beta) / (1 - beta))
+    f2 = interp1d(wlog_input * doppler, thisy, bounds_error=False,
                   fill_value=0)(lx_new)
-    chisq = np.sum((ly_new-f2)**2/ly_err_new**2)/(len(ly_new)-len(p))
+    chisq = np.sum((ly_new - f2) ** 2 / ly_err_new ** 2) / (len(ly_new) - len(p))
 
     if plot:
         fig, ax = pl.subplots(figsize=(15, 15))
@@ -89,12 +89,12 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
         pl.plot(x_flat, y_flat, 'k', alpha=0.5)
         pl.plot(lx_new, ly_new, 'k')
         pl.plot(lx_new, f2, 'r', linewidth=3)
-        pl.plot(lx[0], ly[0], 'o', color='blue',)
-        pl.plot(lx[-1], ly[-1], 'o', color='blue',)
-        pl.plot(wlog_input*doppler, amplitude*fmean_input, 'r', linewidth=2,
+        pl.plot(lx[0], ly[0], 'o', color='blue', )
+        pl.plot(lx[-1], ly[-1], 'o', color='blue', )
+        pl.plot(wlog_input * doppler, amplitude * fmean_input, 'r', linewidth=2,
                 alpha=0.5)
         pl.text(2200, 0.5, r"$v$=%.0f km~s$^{-1}$, $\sigma$=%.0f km s$^{-1}$, \
-                $a$=%.1f, $\Delta$$w$=%.0f \AA" % (-v, sig*400, amplitude,
+                $a$=%.1f, $\Delta$$w$=%.0f \AA" % (-v, sig * 400, amplitude,
                 w_range), fontsize=35)
         pl.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=35)
         pl.xlabel("Rest Wavelength (\AA)", fontsize=35)
@@ -112,7 +112,7 @@ def logprior(p):
     w_range = p[3]
     if s > PriorFe[2] and s < PriorFe[3] and v > PriorFe[0] and \
        v < PriorFe[1] and amplitude > PriorFe[4] and amplitude < PriorFe[5]:
-        return np.log(np.exp(-(w_range)**2 / (2 * 33**2)))
+        return np.log(np.exp(-(w_range) ** 2 / (2 * 33 ** 2)))
     return -np.inf
 
 
@@ -153,22 +153,30 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
     Fes = y_flat_err[np.where((x_flat > Fe_lower) & (x_flat < Fe_upper))]
 
     best_pos = []
-    p0 = [p00 + 1e-6*np.random.randn(ndim) for i in range(nwalkers)]
+    p0 = [p00 + 1e-6 * np.random.randn(ndim) for i in range(nwalkers)]
     samplerFe = emcee.EnsembleSampler(nwalkers, ndim, logp,
                                       args=(Fex, Fey, Fes, fmean_input,
                                             wlog_input, x_flat, y_flat))
     # run MCMC for 30 steps starting from the tiny ball defined above
     samplerFe.run_mcmc(p0, 30)
     best_pos.append(samplerFe.flatchain[samplerFe.flatlnprobability.argmax()])
-    pos = emcee.utils.sample_ball(best_pos[-1], best_pos[-1]/100.,
+    pos = emcee.utils.sample_ball(best_pos[-1], best_pos[-1] / 100.,
                                   size=nwalkers)
     samplerFe.reset()
     samplerFe.run_mcmc(pos, 1000)
     best_pos.append(samplerFe.flatchain[samplerFe.flatlnprobability.argmax()])
-    value_50 = [np.percentile(samplerFe.chain[:, :, 0], [50])[0],
-                np.percentile(samplerFe.chain[:, :, 1], [50])[0],
-                np.percentile(samplerFe.chain[:, :, 2], [50])[0],
-                np.percentile(samplerFe.chain[:, :, 3], [50])[0]]
+    value_50 = [np.percentile(samplerFe.chain[:
+        , :
+        , 0], [50])[0],
+                np.percentile(samplerFe.chain[:
+        , :
+        , 1], [50])[0],
+                np.percentile(samplerFe.chain[:
+        , :
+        , 2], [50])[0],
+                np.percentile(samplerFe.chain[:
+        , :
+        , 3], [50])[0]]
 
     # save marginalized distribution of model parameters
     if posterior_save:
@@ -186,12 +194,22 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
         pl.close()
 
         # save corner plot
-        value_50 = [np.percentile(samplerFe.chain[:, :, 0], [50])[0],
-                    np.percentile(samplerFe.chain[:, :, 1], [50])[0]*4,
-                    np.percentile(samplerFe.chain[:, :, 2], [50])[0],
-                    np.percentile(samplerFe.chain[:, :, 3], [50])[0]]
+        value_50 = [np.percentile(samplerFe.chain[:
+            , :
+            , 0], [50])[0],
+                    np.percentile(samplerFe.chain[:
+            , :
+            , 1], [50])[0] * 4,
+                    np.percentile(samplerFe.chain[:
+            , :
+            , 2], [50])[0],
+                    np.percentile(samplerFe.chain[:
+            , :
+            , 3], [50])[0]]
 
-        samplerFe.flatchain[:, 1] = samplerFe.flatchain[:, 1]*4
+        samplerFe.flatchain[:
+            , 1] = samplerFe.flatchain[:
+            , 1] * 4
 
         mpl.rcParams['xtick.labelsize'] = 22.
         mpl.rcParams['ytick.labelsize'] = 22.
@@ -209,7 +227,9 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
                    "amplitude", "wave-range [\AA]"]
         for i in range(ndim):
             pl.figure(figsize=(15, 4))
-            pl.plot(range(1000), samplerFe.chain[:, :, i].T)
+            pl.plot(range(1000), samplerFe.chain[:
+                , :
+                , i].T)
             pl.xlabel("steps", fontsize=30)
             pl.ylabel(y_label[i], fontsize=30)
             pp.savefig()
@@ -222,23 +242,31 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
     # distribution of model parameters
     if file_save:
         f = open(file_save, 'w')
-        f.write('region to find initial template fit region:'+str(x0)+'\n')
+        f.write('region to find initial template fit region:' + str(x0) + '\n')
         f.write("Mean acceptance fraction: {0:.3f} \n"
                 .format(np.mean(samplerFe.acceptance_fraction)))
         f.write('uniform prior for v/1000 in km/s, sigma/10 in angstrom, ' +
-                'amplitude: '+str(prior)+'\n')
+                'amplitude: ' + str(prior) + '\n')
         f.write('v/1000 in km/s, sigma/1000 in km/s, amplitude, ' +
-                'wave-range in angstrom'+'\n')
-        f.write('initial guess: '+str(p00)+'\n')
-        f.write('best value: '+str(best_pos[-1])+'\n')
+                'wave-range in angstrom' + '\n')
+        f.write('initial guess: ' + str(p00) + '\n')
+        f.write('best value: ' + str(best_pos[-1]) + '\n')
         f.write('16th, 50th, 84th percentiles \n')
-        f.write(str(np.percentile(samplerFe.chain[:, :, 0], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:
+            , :
+            , 0], [16, 50, 84])) +
                 ' for v/1000 in km/s\n')
-        f.write(str(np.percentile(samplerFe.chain[:, :, 1], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:
+            , :
+            , 1], [16, 50, 84])) +
                 ' for sigma/1000 in km/s\n')
-        f.write(str(np.percentile(samplerFe.chain[:, :, 2], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:
+            , :
+            , 2], [16, 50, 84])) +
                 ' for amplitude\n')
-        f.write(str(np.percentile(samplerFe.chain[:, :, 3], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:
+            , :
+            , 3], [16, 50, 84])) +
                 ' for wave-range in angstrom\n')
         f.close()
 
@@ -247,16 +275,24 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
     print('16th, 50th, 84th percentiles of marginalized distribution' +
           'of model parameters')
     # 16th, 50th, 84th percentiles of the velocity/1000
-    print str(np.percentile(samplerFe.chain[:, :, 0], [16, 50, 84])) +\
+    print str(np.percentile(samplerFe.chain[:
+        , :
+        , 0], [16, 50, 84])) + \
         ' for v/1000 in km/s'
     # 16th, 50th, 84th percentiles of the sigma/10000 in km/s
-    print str(np.percentile(samplerFe.chain[:, :, 1], [16, 50, 84])) +\
+    print str(np.percentile(samplerFe.chain[:
+        , :
+        , 1], [16, 50, 84])) + \
         ' for sigma/1000 in km/s'
     # 16th, 50th, 84th percentiles of the amplitude
-    print str(np.percentile(samplerFe.chain[:, :, 2], [16, 50, 84])) + \
+    print str(np.percentile(samplerFe.chain[:
+        , :
+        , 2], [16, 50, 84])) + \
         ' for amplitude'
     # 16th, 50th, 84th percentiles of the wave-range in angstrom
-    print str(np.percentile(samplerFe.chain[:, :, 3], [16, 50, 84])) + \
+    print str(np.percentile(samplerFe.chain[:
+        , :
+        , 3], [16, 50, 84])) + \
         ' for wave-range in angstrom'
 
 
@@ -268,8 +304,8 @@ def conv(spec, template):
        np.mean(y_flat[np.where(x_flat > 5100)]) != 0:
         runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm,
                 y_flat, y_flat_err, spec,
-                posterior_save=spec + '-Fe.p', plot_save=spec+'-Fe.pdf',
-                file_save=spec+'-Fe.dat')
+                posterior_save=spec + '-Fe.p', plot_save=spec + '-Fe.pdf',
+                file_save=spec + '-Fe.dat')
     else:
         print("wavelength range doesn't match")
 
