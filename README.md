@@ -44,7 +44,8 @@ The main plot out will look like this:
 
 
 If you use data products in this repository, please <b>cite</b> related references listed above. Here are the bibtex entries for your convenience.
-Modjaz 2016:
+
+Modjaz et al. (2016):
 
     @ARTICLE{2015arXiv150907124M,
       author = {{Modjaz}, M. and {Liu}, Y.~Q. and {Bianco}, F.~B. and {Graur}, O.
@@ -61,7 +62,7 @@ Modjaz 2016:
       adsnote = {Provided by the SAO/NASA Astrophysics Data System} 
     }
 
-Liu 2015:
+Liu et al. (2016):
 
 	@ARTICLE{2015arXiv151008049L,
    		author = {{Liu}, Y.-Q. and {Modjaz}, M. and {Bianco}, F.~B. and {Graur}, O.
