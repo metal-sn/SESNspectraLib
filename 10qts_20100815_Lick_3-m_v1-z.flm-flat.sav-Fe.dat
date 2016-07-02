@@ -1,11 +1,11 @@
 region to find initial template fit region:[4200 4800 5000 5600]
-Mean acceptance fraction: 0.557 
+Mean acceptance fraction: 0.560 
 uniform prior for v/1000 in km/s, sigma/10 in angstrom, amplitude: [ 0 30  0  5  0  3]
 v/1000 in km/s, sigma/1000 in km/s, amplitude, wave-range in angstrom
 initial guess: [ 11.   1.   1.   1.]
-best value: [ 11.30944426   4.44930741   1.3988492    0.96883457]
+best value: [ 11.29365498   4.46639981   1.40759563   0.68090133]
 16th, 50th, 84th percentiles 
-[ 11.02875515  11.29523015  11.5840137 ] for v/1000 in km/s
-[ 4.1504919   4.49301308  4.83147387] for sigma/1000 in km/s
-[ 1.29499814  1.39994899  1.49670579] for amplitude
-[ 0.52621097  2.32211986  6.34467956] for wave-range in angstrom
+[ 11.03473214  11.31697052  11.57283873] for v/1000 in km/s
+[ 4.2355698   4.54219278  4.86659571] for sigma/1000 in km/s
+[ 1.31041678  1.40845969  1.50139907] for amplitude
+[ 0.54435987  2.45664605  6.51081607] for wave-range in angstrom
