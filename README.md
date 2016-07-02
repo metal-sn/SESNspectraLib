@@ -43,4 +43,19 @@ The main plot out will look like this:
 ![alt tag](https://raw.githubusercontent.com/nyusngroup/SESNspectraLib/master/10qts_20100815_Lick_3-m_v1-z.flm-flat-Fe.png)
 
 
-If you use data products in this repository, please <b>cite</b> related references listed above.
+If you use data products in this repository, please <b>cite</b> related references listed above. Here are the bibtex entries for your convenience.
+
+    @ARTICLE{2015arXiv150907124M,
+      author = {{Modjaz}, M. and {Liu}, Y.~Q. and {Bianco}, F.~B. and {Graur}, O.
+	    },
+        title = "{The Spectral SN-GRB Connection: Systematic Spectral Comparisons between Type Ic Supernovae, and broad-lined Type Ic Supernovae with and without Gamma-Ray Bursts}",
+      journal = {ArXiv e-prints},
+    archivePrefix = "arXiv",
+      eprint = {1509.07124},
+    primaryClass = "astro-ph.HE",
+    keywords = {Astrophysics - High Energy Astrophysical Phenomena, Astrophysics - Solar and Stellar Astrophysics},
+         year = 2015,
+        month = sep,
+      adsurl = {http://adsabs.harvard.edu/abs/2015arXiv150907124M},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System} 
+    }
