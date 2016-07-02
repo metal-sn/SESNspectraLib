@@ -45,7 +45,7 @@ X0Fe = np.array([4200, 4800, 5000, 5600])
 
 
 def readdata(spec, template):
-    ''' read in flattened Ic-bl spectrum and the corresponding
+    ''' readdata: read in flattened Ic-bl spectrum and the corresponding
     uncertainty array,  SNe Ic template '''
 
     # read in Ic template
@@ -69,7 +69,7 @@ def readdata(spec, template):
 
 def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
                 ax=None):
-    ''' fit SN Ic-bl spectrum to a convolved and blueshifted SN Ic template'''
+    ''' fittemplate: fit SN Ic-bl spectrum to a convolved and blueshifted SN Ic template'''
 
     # assign values to parameters of absorption velocity, width of absorption
     # feature, amplitude, and wavelength-range
@@ -118,7 +118,6 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
 
 
 def logprior(p):
-    '''log prior'''
     v = p[0]
     s = p[1]
     amplitude = p[2]
@@ -130,13 +129,13 @@ def logprior(p):
 
 
 def logl(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat):
-    ''' log likelihood'''
+    # log likelihood
     return -np.log(s) - 0.5 * (fittemplate(p, fmean_input, wlog_input,
                                            x, y, s, x_flat, y_flat))
 
 
 def logp(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat):
-    '''full log probability '''
+    # full log probability 
     lgl = logl(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat)
     return np.sum(logprior(p) + lgl)
 
@@ -144,7 +143,7 @@ def logp(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat):
 def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
             spec, x0=X0Fe, p00=P0Fe, prior=PriorFe, posterior_save=False,
             plot_save=False, file_save=False, plotChain=False):
-    ''' sample probability distribution using package emcee,
+    '''runMCMC: sample probability distribution using package emcee,
     and get marginalized distribution of model parameters  '''
 
     ndim, nwalkers = 4, 6 * 2
