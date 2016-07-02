@@ -1,29 +1,39 @@
+from __future__ import print_function
+
 # -*- coding: utf-8 -*-
 ##############################################################################
-# Input:
-# flattened Ic-bl spectrum (use snidflat.pro)
-# the corresponding uncertainty array
-# SNe Ic template
-# Output:
-# marginalized distribution of model parameters, including but not
-# limited to absorption velocity, see Modjaz et al. (2016) for details
-# Note: initial values and prior of model parameters, and region to find
-# initial template fitting region can be changed as needed
-##############################################################################
+'''
+Fits a SN template spectrum to a SN observed spectrum 
+to measure spectral features
+blue-shift and broadening
 
+
+Arguments:
+
+ flattened Ic-bl spectrum (use snidflat.pro) in .save IDL format
+
+ the corresponding uncertainty array
+ SNe Ic template
+ Output:
+ marginalized distribution of model parameters, including but not
+ limited to absorption velocity, see Modjaz et al. (2016) for details
+ Note: initial values and prior of model parameters, and region to find
+ initial template fitting region can be changed as needed
+'''
+import sys
+import time
+import corner
+import emcee
+import pickle as pkl
 import numpy as np
-from scipy.io.idl import readsav
 import pylab as pl
+from matplotlib import  rcParams
+from matplotlib.ticker import MultipleLocator
 from scipy.ndimage import filters
 from scipy.signal import gaussian
 from scipy.interpolate import interp1d
-from matplotlib.backends.backend_pdf import PdfPages
-import corner
-import emcee
-from matplotlib.ticker import MultipleLocator
-import matplotlib as mpl
-import pickle as pkl
-import time
+from scipy.io.idl import readsav
+
 
 # initial parameter values
 # v/1000 in km/s, sigma/10 in angstrom, y-amplitude, wave-range in angstrom
@@ -39,7 +49,11 @@ def readdata(spec, template):
     uncertainty array,  SNe Ic template '''
 
     # read in Ic template
-    s = readsav(template)
+    try:
+        s = readsav(template)
+    except  Exception:
+        print("readsav filed. Must pass 2 .sav files as input")
+        return [-1]*6
     wlog_input = s.wlog[np.where((s.wlog > 4400) & (s.wlog < 9000))]
     fmean_input = s.fmean[np.where((s.wlog > 4400) & (s.wlog < 9000))]
 
@@ -54,7 +68,7 @@ def readdata(spec, template):
 
 
 def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
-                plot=False):
+                ax=None):
     ''' fit SN Ic-bl spectrum to a convolved and blueshifted SN Ic template'''
 
     # assign values to parameters of absorption velocity, width of absorption
@@ -79,27 +93,26 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
                   fill_value=0)(lx_new)
     chisq = np.sum((ly_new - f2) ** 2 / ly_err_new ** 2) / (len(ly_new) - len(p))
 
-    if plot:
-        fig, ax = pl.subplots(figsize=(15, 15))
+    if not ax is None:
         minorLocatory = MultipleLocator(0.02)
         minorLocatorx = MultipleLocator(100)
         ax.xaxis.set_minor_locator(minorLocatorx)
         ax.yaxis.set_minor_locator(minorLocatory)
 
-        pl.plot(x_flat, y_flat, 'k', alpha=0.5)
-        pl.plot(lx_new, ly_new, 'k')
-        pl.plot(lx_new, f2, 'r', linewidth=3)
-        pl.plot(lx[0], ly[0], 'o', color='blue', )
-        pl.plot(lx[-1], ly[-1], 'o', color='blue', )
-        pl.plot(wlog_input * doppler, amplitude * fmean_input, 'r', linewidth=2,
+        ax.plot(x_flat, y_flat, 'k', alpha=0.5)
+        ax.plot(lx_new, ly_new, 'k')
+        ax.plot(lx_new, f2, 'r', linewidth=3)
+        ax.plot(lx[0], ly[0], 'o', color='blue', )
+        ax.plot(lx[-1], ly[-1], 'o', color='blue', )
+        ax.plot(wlog_input * doppler, amplitude * fmean_input, 'r', linewidth=2,
                 alpha=0.5)
-        pl.text(2200, 0.5, r"$v$=%.0f km~s$^{-1}$, $\sigma$=%.0f km s$^{-1}$, \
+        ax.text(2200, 0.5, r"$v$=%.0f km~s$^{-1}$, $\sigma$=%.0f km s$^{-1}$, \
                 $a$=%.1f, $\Delta$$w$=%.0f \AA" % (-v, sig * 400, amplitude,
                 w_range), fontsize=35)
-        pl.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=35)
-        pl.xlabel("Rest Wavelength (\AA)", fontsize=35)
-        pl.ylabel("Relative Flux", fontsize=35)
-        pl.legend(fontsize=35)
+        ax.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=35)
+        ax.set_xlabel("Rest Wavelength (\AA)", fontsize=35)
+        ax.set_ylabel("Relative Flux", fontsize=35)
+        ax.legend(fontsize=35)
 
     return chisq
 
@@ -130,7 +143,7 @@ def logp(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat):
 
 def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
             spec, x0=X0Fe, p00=P0Fe, prior=PriorFe, posterior_save=False,
-            plot_save=False, file_save=False):
+            plot_save=False, file_save=False, plotChain=False):
     ''' sample probability distribution using package emcee,
     and get marginalized distribution of model parameters  '''
 
@@ -183,15 +196,17 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
         with open(posterior_save, 'w') as f:
             pkl.dump(samplerFe, f)
 
-    # save template fit plot, corner plot, and chain plot
+    # save template fit plot, corner plot (and chain plot if requested)
     if plot_save:
-        pp = PdfPages(plot_save)
 
         # save template fit plot
+        fig, ax = pl.subplots(figsize=(15, 15))
+        
         fittemplate(value_50, fmean_input, wlog_input, Fex, Fey, Fes, x_flat,
-                    y_flat, plot=True)
-        pp.savefig()
-        pl.close()
+                    y_flat, ax = ax)
+        
+        pl.savefig(plot_save)
+        pl.close(fig)
 
         # save corner plot
         value_50 = [np.percentile(samplerFe.chain[:
@@ -211,31 +226,32 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
             , 1] = samplerFe.flatchain[:
             , 1] * 4
 
-        mpl.rcParams['xtick.labelsize'] = 22.
-        mpl.rcParams['ytick.labelsize'] = 22.
-
-        corner.corner(samplerFe.flatchain, truths=value_50,
+        rcParams['xtick.labelsize'] = 22.
+        rcParams['ytick.labelsize'] = 22.
+        fig_corner = corner.corner(samplerFe.flatchain, truths=value_50,
                       quantiles=[0.16, 0.5, 0.84],
                       labels=[r"$v$ [10$^3$ km s$^{-1}$]",
                               "$\sigma$ [$10^3$ km s$^{-1}$]", "$a$",
                               "$\Delta$$w$ [\AA]"])
-        pp.savefig()
-        pl.close()
+        fig_corner.savefig(plot_save.replace('Fe.pdf','FeFit.pdf'))
+        pl.close(fig_corner)
 
         # save chain plot
-        y_label = [r"$v/1000$ [km s$^{-1}$]", "$\sigma/1000$ [km s$^{-1}$ ]",
-                   "amplitude", "wave-range [\AA]"]
-        for i in range(ndim):
-            pl.figure(figsize=(15, 4))
-            pl.plot(range(1000), samplerFe.chain[:
-                , :
-                , i].T)
-            pl.xlabel("steps", fontsize=30)
-            pl.ylabel(y_label[i], fontsize=30)
-            pp.savefig()
-        pl.close()
+        if plotChain:
+            y_label = [r"$v/1000$ [km s$^{-1}$]", "$\sigma/1000$ [km s$^{-1}$ ]",
+                       "amplitude", "wave-range [\AA]"]
+            figChain = pl.figure(figsize=(15, 4*ndim))
+            for i in range(ndim):
+                ax = figChain.add_subplot(ndim,1,i+1)
+                ax.plot(range(1000), samplerFe.chain[:
+                                                     , :
+                                                     , i].T)
+                if i == ndim - 1:
+                    ax.set_xlabel("steps", fontsize=30)
+                ax.set_ylabel(y_label[i], fontsize=30)
+            figChain.savefig(plot_save.replace('Fe.pdf','FeChain.pdf'))
+        pl.close('all')
 
-        pp.close()
 
     # save initial template fit region, mean acceptance fraction, initial
     # values for parameters, and 16th, 50th, 84th percentiles of marginalized
@@ -275,46 +291,72 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
     print('16th, 50th, 84th percentiles of marginalized distribution' +
           'of model parameters')
     # 16th, 50th, 84th percentiles of the velocity/1000
-    print str(np.percentile(samplerFe.chain[:
+    print(str(np.percentile(samplerFe.chain[:
         , :
         , 0], [16, 50, 84])) + \
-        ' for v/1000 in km/s'
+        ' for v/1000 in km/s')
     # 16th, 50th, 84th percentiles of the sigma/10000 in km/s
-    print str(np.percentile(samplerFe.chain[:
+    print(str(np.percentile(samplerFe.chain[:
         , :
         , 1], [16, 50, 84])) + \
-        ' for sigma/1000 in km/s'
+        ' for sigma/1000 in km/s')
     # 16th, 50th, 84th percentiles of the amplitude
-    print str(np.percentile(samplerFe.chain[:
+    print(str(np.percentile(samplerFe.chain[:
         , :
         , 2], [16, 50, 84])) + \
-        ' for amplitude'
+        ' for amplitude')
     # 16th, 50th, 84th percentiles of the wave-range in angstrom
-    print str(np.percentile(samplerFe.chain[:
+    print(str(np.percentile(samplerFe.chain[:
         , :
         , 3], [16, 50, 84])) + \
-        ' for wave-range in angstrom'
+        ' for wave-range in angstrom')
 
 
 def conv(spec, template):
 
-    wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err = \
+    try:
+        wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err = \
                                                     readdata(spec, template)
+    except IOError:
+        print("must pass 2 .save files as input")
+        return -1
+    if isinstance(wlog_input, int):
+        return -1
     if np.mean(y_flat[np.where(x_flat < 4500)]) != 0 and \
        np.mean(y_flat[np.where(x_flat > 5100)]) != 0:
         runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm,
                 y_flat, y_flat_err, spec,
-                posterior_save=spec + '-Fe.p', plot_save=spec + '-Fe.pdf',
-                file_save=spec + '-Fe.dat')
+                posterior_save=spec.replace('.sav','') + '-Fe.p',
+                plot_save=spec.replace('.sav','') + '-Fe.pdf',
+                file_save=spec.replace('.sav','') + '-Fe.dat', plotChain=True)
     else:
         print("wavelength range doesn't match")
-
-
+        return -1
+    return 0
 if __name__ == '__main__':
 
+    helpStrg = '''Arguments: observed spectrum and template spectrum: use as
+$python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspecIc_0.sav'''
+    
     t1 = time.time()
 
-    conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
+    if len(sys.argv) == 1:
+        # use default arguments for testing
+        obsSpec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
+        templSpec = 'meanspecIc_0.sav'
 
+    elif len(sys.argv) == 3:
+        # assume that you passed correctly the spectrum and template spectrum
+        obsSpec, templSpec = sys.argv[1:]
+
+    else:
+        print(helpStrg)
+        sys.exit()
+
+    print("running convolution...")
+    if conv(obsSpec, templSpec) == -1:
+        print(helpStrg)
+        sys.exit()
+        
     t2 = time.time()
-    print 'minimization took {} seconds'.format(t2 - t1)
+    print('minimization took {} seconds'.format(t2 - t1))
