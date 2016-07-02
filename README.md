@@ -44,6 +44,7 @@ The main plot out will look like this:
 
 
 If you use data products in this repository, please <b>cite</b> related references listed above. Here are the bibtex entries for your convenience.
+Modjaz 2016:
 
     @ARTICLE{2015arXiv150907124M,
       author = {{Modjaz}, M. and {Liu}, Y.~Q. and {Bianco}, F.~B. and {Graur}, O.
@@ -59,3 +60,20 @@ If you use data products in this repository, please <b>cite</b> related referenc
       adsurl = {http://adsabs.harvard.edu/abs/2015arXiv150907124M},
       adsnote = {Provided by the SAO/NASA Astrophysics Data System} 
     }
+
+Liu 2015:
+
+	@ARTICLE{2015arXiv151008049L,
+   		author = {{Liu}, Y.-Q. and {Modjaz}, M. and {Bianco}, F.~B. and {Graur}, O.
+		},
+    		title = "{Analyzing the Largest Spectroscopic Dataset of Stripped Supernovae to Improve Their Identifications and Constrain Their Progenitors}",
+  		journal = {ArXiv e-prints},
+		archivePrefix = "arXiv",
+		   eprint = {1510.08049},
+ 		primaryClass = "astro-ph.HE",
+ 		keywords = {Astrophysics - High Energy Astrophysical Phenomena, Astrophysics - Solar and Stellar Astrophysics},
+     		year = 2015,
+    		month = oct,
+   		adsurl = {http://adsabs.harvard.edu/abs/2015arXiv151008049L},
+  		adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+		}
