@@ -23,7 +23,8 @@ IDL> oplot, w_ft, f_ft, color=250
 Following code is an example of **Ic_conv_Icbl_MCMC.py** in Python, which will produce: 
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.dat**, a text file that contains initial template fit region, mean acceptance fraction, initial values for parameters, and 16th, 50th, 84th percentiles of marginalized distribution of model parameters.
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.p**, a pickle file that contains marginalized distribution of model parameters.
-- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf**, a PDF file that contains template fit plot, corner plot, and chain plot.
+- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf**, a PDF file that contains template fit plot, corner plot (produced using the [corner.py] (https://github.com/dfm/corner.py package) ), and chain plot.
+
 ```
 >>> import Ic_conv_Icbl_MCMC as Ic_conv_Icbl
 >>> Ic_conv_Icbl.conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
