@@ -25,7 +25,7 @@ The following chunk of Python is an example of **Ic_conv_Icbl_MCMC.py** in Pytho
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.p**, a pickle file that contains marginalized distribution of model parameters.
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf**, a PDF file that contains template fit plot
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeFit.pdf** corner plot (produced using the [corner.py] (https://github.com/dfm/corner.py package) ) as a fit diagnosis
-- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeFit.pdf** as an optional plot, and chain plot for the MCMC fit, as a fit diagnosis.
+- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeChain.pdf** as an optional plot, and chain plot for the MCMC fit, as a fit diagnosis.
 
 
 ```
