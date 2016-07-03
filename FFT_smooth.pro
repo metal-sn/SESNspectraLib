@@ -1,5 +1,6 @@
 PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 
+; Version 1.0, July 2016
 ; NAME:
 ;    FFT_SMOOTH
 ; PURPOSE:
