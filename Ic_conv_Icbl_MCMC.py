@@ -8,10 +8,8 @@ to measure spectral features
 blue-shift and broadening
 
 
-Arguments:
-
+ Arguments: 
  flattened Ic-bl spectrum (use snidflat.pro) in .save IDL format
-
  the corresponding uncertainty array
  SNe Ic template
  Output:
@@ -99,20 +97,19 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
         ax.xaxis.set_minor_locator(minorLocatorx)
         ax.yaxis.set_minor_locator(minorLocatory)
 
-        ax.plot(x_flat, y_flat, 'k', alpha=0.5)
-        ax.plot(lx_new, ly_new, 'k')
-        ax.plot(lx_new, f2, 'r', linewidth=3)
-        ax.plot(lx[0], ly[0], 'o', color='blue', )
-        ax.plot(lx[-1], ly[-1], 'o', color='blue', )
+        ax.plot(x_flat, y_flat, 'k', alpha=0.5, label="Input SN Ic-bl spectrum")
+        ax.plot(lx_new, ly_new, 'k', linewidth=3, label="Fitting region")
         ax.plot(wlog_input * doppler, amplitude * fmean_input, 'r', linewidth=2,
-                alpha=0.5)
-        ax.text(2200, 0.5, r"$v$=%.0f km~s$^{-1}$, $\sigma$=%.0f km s$^{-1}$, \
-                $a$=%.1f, $\Delta$$w$=%.0f \AA" % (-v, sig * 400, amplitude,
-                w_range), fontsize=35)
-        ax.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=35)
-        ax.set_xlabel("Rest Wavelength (\AA)", fontsize=35)
-        ax.set_ylabel("Relative Flux", fontsize=35)
-        ax.legend(fontsize=35)
+                alpha=0.5, label="Blueshifted SN Ic template")
+        ax.plot(lx_new, f2, 'r', linewidth=4, label="Fitted SN Ic template")
+        ax.text(4500, -0.4, r"$v$=%.0f km s$^{-1}$   $\sigma$=%.0f km s$^{-1}$" % 
+                (-v, sig * 400), fontsize=25)
+        ax.text(4500, -0.5, r"$a$=%.1f   $\Delta$$w$=%.0f $\AA$" %
+                (amplitude, w_range), fontsize=25)
+        ax.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=25)
+        ax.set_xlabel("Rest Wavelength ($\AA$)", fontsize=25)
+        ax.set_ylabel("Relative Flux", fontsize=25)
+        ax.legend(fontsize=25)
 
     return chisq
 
@@ -231,14 +228,14 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
                       quantiles=[0.16, 0.5, 0.84],
                       labels=[r"$v$ [10$^3$ km s$^{-1}$]",
                               "$\sigma$ [$10^3$ km s$^{-1}$]", "$a$",
-                              "$\Delta$$w$ [\AA]"])
+                              "$\Delta$$w$ [$\AA$]"])
         fig_corner.savefig(plot_save.replace('Fe.pdf','FeFit.pdf'))
         pl.close(fig_corner)
 
         # save chain plot
         if plotChain:
             y_label = [r"$v/1000$ [km s$^{-1}$]", "$\sigma/1000$ [km s$^{-1}$ ]",
-                       "amplitude", "wave-range [\AA]"]
+                       "amplitude", "wave-range [$\AA$]"]
             figChain = pl.figure(figsize=(15, 4*ndim))
             for i in range(ndim):
                 ax = figChain.add_subplot(ndim,1,i+1)
@@ -356,6 +353,6 @@ $python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspec
     if conv(obsSpec, templSpec) == -1:
         print(helpStrg)
         sys.exit()
-        
+
     t2 = time.time()
     print('minimization took {} seconds'.format(t2 - t1))
