@@ -2,6 +2,7 @@ from __future__ import print_function
 
 # -*- coding: utf-8 -*-
 ##############################################################################
+# Version 1.0, July 2016
 '''
 Fits a SN template spectrum to a SN observed spectrum 
 to measure spectral features
