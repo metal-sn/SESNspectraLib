@@ -56,7 +56,7 @@ Modjaz et al. (2016):
       eprint = {1509.07124},
     primaryClass = "astro-ph.HE",
     keywords = {Astrophysics - High Energy Astrophysical Phenomena, Astrophysics - Solar and Stellar Astrophysics},
-         year = 2015,
+         year = 2016,
         month = sep,
       adsurl = {http://adsabs.harvard.edu/abs/2015arXiv150907124M},
       adsnote = {Provided by the SAO/NASA Astrophysics Data System} 
@@ -73,7 +73,7 @@ Liu et al. (2016):
 		   eprint = {1510.08049},
  		primaryClass = "astro-ph.HE",
  		keywords = {Astrophysics - High Energy Astrophysical Phenomena, Astrophysics - Solar and Stellar Astrophysics},
-     		year = 2015,
+     		year = 2016,
     		month = oct,
    		adsurl = {http://adsabs.harvard.edu/abs/2015arXiv151008049L},
   		adsnote = {Provided by the SAO/NASA Astrophysics Data System}
