@@ -6,7 +6,7 @@ function binspec, wavelength, flux, wstart, wend, wbin, outlam
 
 ;
 ; Simple binning of spectra
-; (sent to me by Gregory Sainton)
+; (sent to Stephane Blondin by Gregory Sainton)
 ;  
 ; Syntax - outflux = binspec(wavelength, flux, wstart, wend, wbin, outlam)
 ;
