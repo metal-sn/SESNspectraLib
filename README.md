@@ -42,6 +42,8 @@ minimization took 47.1844210625 seconds
 The main plot out will look like this:
 ![alt tag](https://raw.githubusercontent.com/nyusngroup/SESNspectraLib/master/10qts_20100815_Lick_3-m_v1-z.flm-flat-Fe.png)
 
+Note that the input spectra of **Ic_conv_Icbl_MCMC.py** are flattened by **snidflat.pro** in **snid_pro.tgz** which can be downloaded via ![Stephane Blondin's webpage](https://people.lam.fr/blondin.stephane/software/snid/index.html#Download).
+
 
 If you use data products in this repository, please <b>cite</b> related references listed above. Here are the bibtex entries for your convenience.
 
