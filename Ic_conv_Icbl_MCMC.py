@@ -129,21 +129,20 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
         minorLocatorx = MultipleLocator(100)
         ax.xaxis.set_minor_locator(minorLocatorx)
         ax.yaxis.set_minor_locator(minorLocatory)
-
-        ax.plot(x_flat, y_flat, 'k', alpha=0.5)
-        ax.plot(lx_new, ly_new, 'k')
-        ax.plot(lx_new, f2, 'r', linewidth=3)
-        ax.plot(lx[0], ly[0], 'o', color='blue', )
-        ax.plot(lx[-1], ly[-1], 'o', color='blue', )
-        ax.plot(wlog_input * doppler, amplitude * fmean_input, 'r', linewidth=2,
-                alpha=0.5)
-        ax.text(2200, 0.5, r"$v$=%.0f km s$^{-1}$, $\sigma$=%.0f km s$^{-1}$, \
-                $a$=%.1f, $\Delta$$w$=%.0f \AA" % (-v, sig * 400, amplitude,
-                w_range), fontsize=35)
-        ax.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=35)
-        ax.set_xlabel("Rest Wavelength (\AA)", fontsize=35)
-        ax.set_ylabel("Relative Flux", fontsize=35)
-        ax.legend(fontsize=35)
+        ax.plot(x_flat, y_flat, 'k', alpha=0.5,
+                label="Input SN Ic-bl spectrum")
+        ax.plot(lx_new, ly_new, 'k', linewidth=3, label="Fitting region")
+        ax.plot(wlog_input * doppler, amplitude * fmean_input, 'r',
+                linewidth=2, alpha=0.5, label="Blueshifted SN Ic template")
+        ax.plot(lx_new, f2, 'r', linewidth=4, label="Fitted SN Ic template")
+        ax.text(4500, -0.4, r"$v$=%.0f km s$^{-1}$   $\sigma$=%.0f km s$^{-1}$"
+                % (-v, sig * 400), fontsize=25)
+        ax.text(4500, -0.5, r"$a$=%.1f   $\Delta$$w$=%.0f $\AA$" %
+                (amplitude, w_range), fontsize=25)
+        ax.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=25)
+        ax.set_xlabel("Rest Wavelength ($\AA$)", fontsize=25)
+        ax.set_ylabel("Relative Flux", fontsize=25)
+        ax.legend(fontsize=25)
 
     return chisq
 
