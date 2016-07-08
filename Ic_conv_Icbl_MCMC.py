@@ -2,16 +2,15 @@ from __future__ import print_function
 
 # -*- coding: utf-8 -*-
 ##############################################################################
+# Version 1.0, July 2016
 '''
-Fits a SN template spectrum to a SN observed spectrum 
+Fits a SN template spectrum to a SN observed spectrum
 to measure spectral features
 blue-shift and broadening
 
 
-Arguments:
-
+ Arguments:
  flattened Ic-bl spectrum (use snidflat.pro) in .save IDL format
-
  the corresponding uncertainty array
  SNe Ic template
  Output:
@@ -27,7 +26,7 @@ import emcee
 import pickle as pkl
 import numpy as np
 import pylab as pl
-from matplotlib import  rcParams
+from matplotlib import rcParams
 from matplotlib.ticker import MultipleLocator
 from scipy.ndimage import filters
 from scipy.signal import gaussian
@@ -58,6 +57,7 @@ def readdata(spec, template):
     # read in Ic template
     try:
         s = readsav(template)
+
         if spec.endswith('.sav'):
             s2 = readsav(spec)
         else:
@@ -100,7 +100,8 @@ def readdata(spec, template):
 
 def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
                 ax=None):
-    ''' fittemplate: fit SN Ic-bl spectrum to a convolved and blueshifted SN Ic template'''
+    ''' fittemplate: fit SN Ic-bl spectrum to a convolved and blueshifted
+        SN Ic template'''
 
     # assign values to parameters of absorption velocity, width of absorption
     # feature, amplitude, and wavelength-range
@@ -122,9 +123,10 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
     doppler = np.sqrt((1 + beta) / (1 - beta))
     f2 = interp1d(wlog_input * doppler, thisy, bounds_error=False,
                   fill_value=0)(lx_new)
-    chisq = np.sum((ly_new - f2) ** 2 / ly_err_new ** 2) / (len(ly_new) - len(p))
+    chisq = \
+        np.sum((ly_new - f2) ** 2 / ly_err_new ** 2) / (len(ly_new) - len(p))
 
-    if not ax is None:
+    if ax is not None:
         minorLocatory = MultipleLocator(0.02)
         minorLocatorx = MultipleLocator(100)
         ax.xaxis.set_minor_locator(minorLocatorx)
@@ -165,7 +167,7 @@ def logl(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat):
 
 
 def logp(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat):
-    # full log probability 
+    # full log probability
     lgl = logl(p, x, y, s, fmean_input, wlog_input, x_flat, y_flat)
     return np.sum(logprior(p) + lgl)
 
@@ -207,18 +209,10 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
     samplerFe.reset()
     samplerFe.run_mcmc(pos, 1000)
     best_pos.append(samplerFe.flatchain[samplerFe.flatlnprobability.argmax()])
-    value_50 = [np.percentile(samplerFe.chain[:
-        , :
-        , 0], [50])[0],
-                np.percentile(samplerFe.chain[:
-        , :
-        , 1], [50])[0],
-                np.percentile(samplerFe.chain[:
-        , :
-        , 2], [50])[0],
-                np.percentile(samplerFe.chain[:
-        , :
-        , 3], [50])[0]]
+    value_50 = [np.percentile(samplerFe.chain[:, :, 0], [50])[0],
+                np.percentile(samplerFe.chain[:, :, 1], [50])[0],
+                np.percentile(samplerFe.chain[:, :, 2], [50])[0],
+                np.percentile(samplerFe.chain[:, :, 3], [50])[0]]
 
     # save marginalized distribution of model parameters
     if posterior_save:
@@ -230,57 +224,45 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
 
         # save template fit plot
         fig, ax = pl.subplots(figsize=(15, 15))
-        
+
         fittemplate(value_50, fmean_input, wlog_input, Fex, Fey, Fes, x_flat,
-                    y_flat, ax = ax)
-        
+                    y_flat, ax=ax)
+
         pl.savefig(plot_save)
         pl.close(fig)
 
         # save corner plot
-        value_50 = [np.percentile(samplerFe.chain[:
-            , :
-            , 0], [50])[0],
-                    np.percentile(samplerFe.chain[:
-            , :
-            , 1], [50])[0] * 4,
-                    np.percentile(samplerFe.chain[:
-            , :
-            , 2], [50])[0],
-                    np.percentile(samplerFe.chain[:
-            , :
-            , 3], [50])[0]]
+        value_50 = [np.percentile(samplerFe.chain[:, :, 0], [50])[0],
+                    np.percentile(samplerFe.chain[:, :, 1], [50])[0] * 4,
+                    np.percentile(samplerFe.chain[:, :, 2], [50])[0],
+                    np.percentile(samplerFe.chain[:, :, 3], [50])[0]]
 
-        samplerFe.flatchain[:
-            , 1] = samplerFe.flatchain[:
-            , 1] * 4
+        samplerFe.flatchain[:, 1] = samplerFe.flatchain[:, 1] * 4
 
         rcParams['xtick.labelsize'] = 22.
         rcParams['ytick.labelsize'] = 22.
         fig_corner = corner.corner(samplerFe.flatchain, truths=value_50,
-                      quantiles=[0.16, 0.5, 0.84],
-                      labels=[r"$v$ [10$^3$ km s$^{-1}$]",
-                              "$\sigma$ [$10^3$ km s$^{-1}$]", "$a$",
-                              "$\Delta$$w$ [\AA]"])
-        fig_corner.savefig(plot_save.replace('Fe.pdf','FeFit.pdf'))
+                                   quantiles=[0.16, 0.5, 0.84],
+                                   labels=[r"$v$ [10$^3$ km s$^{-1}$]",
+                                           "$\sigma$ [$10^3$ km s$^{-1}$]",
+                                           "$a$", "$\Delta$$w$ [$\AA$]"])
+        fig_corner.savefig(plot_save.replace('Fe.pdf', 'FeFit.pdf'))
         pl.close(fig_corner)
 
         # save chain plot
         if plotChain:
-            y_label = [r"$v/1000$ [km s$^{-1}$]", "$\sigma/1000$ [km s$^{-1}$ ]",
-                       "amplitude", "wave-range [\AA]"]
+            y_label = [r"$v/1000$ [km s$^{-1}$]",
+                       "$\sigma/1000$ [km s$^{-1}$ ]",
+                       "amplitude", "wave-range [$\AA$]"]
             figChain = pl.figure(figsize=(15, 4*ndim))
             for i in range(ndim):
-                ax = figChain.add_subplot(ndim,1,i+1)
-                ax.plot(range(1000), samplerFe.chain[:
-                                                     , :
-                                                     , i].T)
+                ax = figChain.add_subplot(ndim, 1, i+1)
+                ax.plot(range(1000), samplerFe.chain[:, :, i].T)
                 if i == ndim - 1:
                     ax.set_xlabel("steps", fontsize=30)
                 ax.set_ylabel(y_label[i], fontsize=30)
-            figChain.savefig(plot_save.replace('Fe.pdf','FeChain.pdf'))
+            figChain.savefig(plot_save.replace('Fe.pdf', 'FeChain.pdf'))
         pl.close('all')
-
 
     # save initial template fit region, mean acceptance fraction, initial
     # values for parameters, and 16th, 50th, 84th percentiles of marginalized
@@ -297,21 +279,13 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
         f.write('initial guess: ' + str(p00) + '\n')
         f.write('best value: ' + str(best_pos[-1]) + '\n')
         f.write('16th, 50th, 84th percentiles \n')
-        f.write(str(np.percentile(samplerFe.chain[:
-            , :
-            , 0], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:, :, 0], [16, 50, 84])) +
                 ' for v/1000 in km/s\n')
-        f.write(str(np.percentile(samplerFe.chain[:
-            , :
-            , 1], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:, :, 1], [16, 50, 84])) +
                 ' for sigma/1000 in km/s\n')
-        f.write(str(np.percentile(samplerFe.chain[:
-            , :
-            , 2], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:, :, 2], [16, 50, 84])) +
                 ' for amplitude\n')
-        f.write(str(np.percentile(samplerFe.chain[:
-            , :
-            , 3], [16, 50, 84])) +
+        f.write(str(np.percentile(samplerFe.chain[:, :, 3], [16, 50, 84])) +
                 ' for wave-range in angstrom\n')
         f.close()
 
@@ -320,25 +294,17 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
     print('16th, 50th, 84th percentiles of marginalized distribution' +
           'of model parameters')
     # 16th, 50th, 84th percentiles of the velocity/1000
-    print(str(np.percentile(samplerFe.chain[:
-        , :
-        , 0], [16, 50, 84])) + \
-        ' for v/1000 in km/s')
+    print(str(np.percentile(samplerFe.chain[:, :, 0], [16, 50, 84])) +
+          ' for v/1000 in km/s')
     # 16th, 50th, 84th percentiles of the sigma/10000 in km/s
-    print(str(np.percentile(samplerFe.chain[:
-        , :
-        , 1], [16, 50, 84])) + \
-        ' for sigma/1000 in km/s')
+    print(str(np.percentile(samplerFe.chain[:, :, 1], [16, 50, 84])) +
+          ' for sigma/1000 in km/s')
     # 16th, 50th, 84th percentiles of the amplitude
-    print(str(np.percentile(samplerFe.chain[:
-        , :
-        , 2], [16, 50, 84])) + \
-        ' for amplitude')
+    print(str(np.percentile(samplerFe.chain[:, :, 2], [16, 50, 84])) +
+          ' for amplitude')
     # 16th, 50th, 84th percentiles of the wave-range in angstrom
-    print(str(np.percentile(samplerFe.chain[:
-        , :
-        , 3], [16, 50, 84])) + \
-        ' for wave-range in angstrom')
+    print(str(np.percentile(samplerFe.chain[:, :, 3], [16, 50, 84])) +
+          ' for wave-range in angstrom')
 
 
 def conv(spec, template):
@@ -366,7 +332,6 @@ def conv(spec, template):
         t2 = time.time()
         print('minimization took {} seconds'.format(t2 - t1))
 
-        
     else:
         print("wavelength range doesn't match")
         return -1
@@ -374,8 +339,9 @@ def conv(spec, template):
 if __name__ == '__main__':
 
     helpStrg = '''Arguments: observed spectrum and template spectrum: use as
-$python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspecIc_0.sav'''
-    
+$python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav
+        meanspecIc_0.sav'''
+
     t1 = time.time()
 
     if len(sys.argv) == 1:
@@ -395,4 +361,3 @@ $python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspec
     if conv(obsSpec, templSpec) == -1:
         print(helpStrg)
         sys.exit()
-        

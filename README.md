@@ -11,7 +11,7 @@ At this time two pieces of code are provided:
 NOTE: When not specified otherwise (e.g. Ic_conv_Icbl) our code can be used on any medium resolution spectra of SNe of any type, although it is deisgned for and tested on SESN.
 
 ### Examples
-Following code is an example of **FFT_smooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://arxiv.org/abs/1510.08049):
+The following chunk of IDL code is an example of **FFT_smooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://arxiv.org/abs/1510.08049):
 ```
 IDL> readcol, 'sn2004gq-20041212-z-bl.flm', w, f
 IDL> FFT_smooth, w, f, 1000, w_ft, f_ft, sep_vel
@@ -20,10 +20,13 @@ IDL> oplot, w_ft, f_ft, color=250
 ```
 ![alt tag](https://github.com/nyusngroup/SESNspectraLib/blob/master/example_IDL_plot.png)
 
-Following code is an example of **Ic_conv_Icbl_MCMC.py** in Python, which will produce: 
+The following chunk of Python is an example of **Ic_conv_Icbl_MCMC.py** in Python, which will produce: 
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.dat**, a text file that contains initial template fit region, mean acceptance fraction, initial values for parameters, and 16th, 50th, 84th percentiles of marginalized distribution of model parameters.
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.p**, a pickle file that contains marginalized distribution of model parameters.
-- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf**, a PDF file that contains template fit plot, corner plot (produced using the [corner.py] (https://github.com/dfm/corner.py package) ), and chain plot.
+- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf**, a PDF file that contains template fit plot
+- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeFit.pdf** corner plot (produced using the [corner.py] (https://github.com/dfm/corner.py package) ) as a fit diagnosis
+- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeChain.pdf** as an optional plot, and chain plot for the MCMC fit, as a fit diagnosis.
+
 
 ```
 >>> import Ic_conv_Icbl_MCMC as Ic_conv_Icbl
@@ -36,6 +39,44 @@ Mean acceptance fraction: 0.560
 [ 0.54435987  2.45664605  6.51081607] for wave-range in angstrom
 minimization took 47.1844210625 seconds
 ```
+The main plot out will look like this:
+![alt tag](https://raw.githubusercontent.com/nyusngroup/SESNspectraLib/master/10qts_20100815_Lick_3-m_v1-z.flm-flat-Fe.png)
+
+Note that the input spectra of **Ic_conv_Icbl_MCMC.py** are flattened by **snidflat.pro** in **snid_pro.tgz** which can be downloaded via [Stephane Blondin's webpage](https://people.lam.fr/blondin.stephane/software/snid/index.html#Download).
 
 
-If you use data products in this repository, please <b>cite</b> related references listed above.
+If you use data products in this repository, please <b>cite</b> related references listed above. Here are the bibtex entries for your convenience.
+
+Modjaz et al. (2016):
+
+    @ARTICLE{2015arXiv150907124M,
+      author = {{Modjaz}, M. and {Liu}, Y.~Q. and {Bianco}, F.~B. and {Graur}, O.
+	    },
+        title = "{The Spectral SN-GRB Connection: Systematic Spectral Comparisons between Type Ic Supernovae, and broad-lined Type Ic Supernovae with and without Gamma-Ray Bursts}",
+      journal = {ArXiv e-prints},
+    archivePrefix = "arXiv",
+      eprint = {1509.07124},
+    primaryClass = "astro-ph.HE",
+    keywords = {Astrophysics - High Energy Astrophysical Phenomena, Astrophysics - Solar and Stellar Astrophysics},
+         year = 2016,
+        month = sep,
+      adsurl = {http://adsabs.harvard.edu/abs/2015arXiv150907124M},
+      adsnote = {Provided by the SAO/NASA Astrophysics Data System} 
+    }
+
+Liu et al. (2016):
+
+	@ARTICLE{2015arXiv151008049L,
+   		author = {{Liu}, Y.-Q. and {Modjaz}, M. and {Bianco}, F.~B. and {Graur}, O.
+		},
+    		title = "{Analyzing the Largest Spectroscopic Dataset of Stripped Supernovae to Improve Their Identifications and Constrain Their Progenitors}",
+  		journal = {ArXiv e-prints},
+		archivePrefix = "arXiv",
+		   eprint = {1510.08049},
+ 		primaryClass = "astro-ph.HE",
+ 		keywords = {Astrophysics - High Energy Astrophysical Phenomena, Astrophysics - Solar and Stellar Astrophysics},
+     		year = 2016,
+    		month = oct,
+   		adsurl = {http://adsabs.harvard.edu/abs/2015arXiv151008049L},
+  		adsnote = {Provided by the SAO/NASA Astrophysics Data System}
+		}

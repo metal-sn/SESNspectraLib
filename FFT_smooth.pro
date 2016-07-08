@@ -1,9 +1,10 @@
 PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 
+; Version 1.0, July 2016
 ; NAME:
 ;    FFT_SMOOTH
 ; PURPOSE:
-;    Smooth spectra by separating SN signal from noise in Fourier space
+;    Smooth SN medium resolution spectrum by separating SN signal from noise in Fourier space
 ; CALLING SEQUENCE:
 ;   FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ; INPUTS:
@@ -14,9 +15,10 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ; OUTPUTS:
 ;   w_ft = wavelength corresponding to FFT smoothed flux
 ;   f_ft = FFT smoothed flux
-;   sep_vel = velocity separating spectral signal from the noise
+;   sep_vel = velocity as determined in this code to separate SN spectral signal from the noise (in km/s)
+;
 ; DEPENDENT PROCEDURE:
-; binspec.pro
+; binspec.pro (releaased as part of this repo)
 
 !EXCEPT=2 ;allows IDL to report on the program context in which the error occurred, 
           ;along with the line number in the procedure.
