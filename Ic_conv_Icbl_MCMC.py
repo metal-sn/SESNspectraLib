@@ -35,6 +35,11 @@ from scipy.interpolate import interp1d
 from scipy.io.idl import readsav
 
 
+# spectra range allowed: we restrict the usable wavelength range
+# generally the quality of IR spectra and the Fe blanketing in UV limit
+# the region of the spectrum where our method should be used
+Wlim = (4400, 9000)
+
 # initial parameter values
 # v/1000 in km/s, sigma/10 in angstrom, y-amplitude, wave-range in angstrom
 P0Fe = np.array([11.0, 1.0, 1.0, 1.0])
@@ -48,21 +53,47 @@ def readdata(spec, template):
     ''' readdata: read in flattened Ic-bl spectrum and the corresponding
     uncertainty array,  SNe Ic template '''
 
+    print("reading inputs...")
+
     # read in Ic template
     try:
         s = readsav(template)
+        if spec.endswith('.sav'):
+            s2 = readsav(spec)
+        else:
+            try:
+                # read csv in with pandas if installed
+                import pandas as pd
+                s2 = pd.read_csv(spec).to_dict(orient="list")
+            except ImportError:
+                # read csv with numpy and convert it to dictionary
+                tmp = np.genfromtxt(spec, delimiter=',', dtype=None)
+                s2 = {}
+                s2['wavelog_input'] = tmp[1:,0].astype(float)                
+                s2['flatflux_input'] = tmp[1:,1].astype(float) 
+                s2['flatflux_err_input'] = tmp[1:,2].astype(float) 
+                s2['flatflux_input_sm'] = tmp[1:,3].astype(float) 
+                
     except  Exception:
-        print("readsav filed. Must pass 2 .sav files as input")
+        print("readsav filed. Must pass 2 files as input: ")
+        print("- a spectrum file in .sav or .csv format\n-")
+        print("- a template spectrum file in .sav format ")
+        print("  or a phase (integer number of days) if using the meantemplate distributed with this package\n-")        
         return [-1]*6
-    wlog_input = s.wlog[np.where((s.wlog > 4400) & (s.wlog < 9000))]
-    fmean_input = s.fmean[np.where((s.wlog > 4400) & (s.wlog < 9000))]
+
+    # we restrict the range to 4400 9000 A where most spectra are well sampled
+    wlog_input = s['wlog'][(s['wlog'] > Wlim[0]) * (s['wlog'] < Wlim[1])]
+    fmean_input = s.fmean[(s['wlog'] > Wlim[0]) * (s['wlog'] < Wlim[1])]
 
     # read in Icbl spectrum and uncertainty array
-    s2 = readsav(spec)
-    x_flat = s2.wavelog_input[0:1024]
-    y_flat_sm = s2.flatflux_input_sm
-    y_flat = s2.flatflux_input
-    y_flat_err = s2.flatflux_err_input
+
+    y_flat_sm = np.array(s2['flatflux_input_sm'])
+    y_flat = np.array(s2['flatflux_input'])
+    y_flat_err = np.array(s2['flatflux_err_input'])
+    
+    # the default wavelength array created from our templates
+    # has one extra value at the end
+    x_flat = np.array(s2['wavelog_input'][:y_flat.size])
 
     return wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err
 
@@ -106,7 +137,7 @@ def fittemplate(p, fmean_input, wlog_input, lx, ly, ly_err, x_flat, y_flat,
         ax.plot(lx[-1], ly[-1], 'o', color='blue', )
         ax.plot(wlog_input * doppler, amplitude * fmean_input, 'r', linewidth=2,
                 alpha=0.5)
-        ax.text(2200, 0.5, r"$v$=%.0f km~s$^{-1}$, $\sigma$=%.0f km s$^{-1}$, \
+        ax.text(2200, 0.5, r"$v$=%.0f km s$^{-1}$, $\sigma$=%.0f km s$^{-1}$, \
                 $a$=%.1f, $\Delta$$w$=%.0f \AA" % (-v, sig * 400, amplitude,
                 w_range), fontsize=35)
         ax.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=35)
@@ -149,20 +180,20 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
     ndim, nwalkers = 4, 6 * 2
 
     # template fit region
-    Fe_lower_inds = (x_flat > x0[0]) * (x_flat < x0[1])
+    Fe_lower_inds = (x_flat > x0[0]) & (x_flat < x0[1])
     Fe_lower_x_flat = x_flat[Fe_lower_inds]
     Fe_lower_y_flat_sm = y_flat_sm[Fe_lower_inds]
-    Fe_lower = np.min(Fe_lower_x_flat[np.where(Fe_lower_y_flat_sm ==
-                      np.max(Fe_lower_y_flat_sm))]) + 100
-    Fe_upper_inds = (x_flat > x0[2]) * (x_flat < x0[3])
+    Fe_lower = np.min(Fe_lower_x_flat[Fe_lower_y_flat_sm ==
+                      np.max(Fe_lower_y_flat_sm)]) + 100
+    Fe_upper_inds = (x_flat > x0[2]) & (x_flat < x0[3])
     Fe_upper_x_flat = x_flat[Fe_upper_inds]
     Fe_upper_y_flat_sm = y_flat_sm[Fe_upper_inds]
-    Fe_upper = np.max(Fe_upper_x_flat[np.where(Fe_upper_y_flat_sm ==
-                      np.max(Fe_upper_y_flat_sm))]) - 100
+    Fe_upper = np.max(Fe_upper_x_flat[Fe_upper_y_flat_sm ==
+                      np.max(Fe_upper_y_flat_sm)]) - 100
 
-    Fex = x_flat[np.where((x_flat > Fe_lower) & (x_flat < Fe_upper))]
-    Fey = y_flat[np.where((x_flat > Fe_lower) & (x_flat < Fe_upper))]
-    Fes = y_flat_err[np.where((x_flat > Fe_lower) & (x_flat < Fe_upper))]
+    Fex = x_flat[(x_flat > Fe_lower) & (x_flat < Fe_upper)]
+    Fey = y_flat[(x_flat > Fe_lower) & (x_flat < Fe_upper)]
+    Fes = y_flat_err[(x_flat > Fe_lower) & (x_flat < Fe_upper)]
 
     best_pos = []
     p0 = [p00 + 1e-6 * np.random.randn(ndim) for i in range(nwalkers)]
@@ -312,22 +343,31 @@ def runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err,
 
 
 def conv(spec, template):
-
     try:
         wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err = \
                                                     readdata(spec, template)
     except IOError:
-        print("must pass 2 .save files as input")
+        print("must pass a .csv and a .sav file, or 2 .sav ")
+        print("files or a file and a phase as input")
         return -1
     if isinstance(wlog_input, int):
         return -1
-    if np.mean(y_flat[np.where(x_flat < 4500)]) != 0 and \
-       np.mean(y_flat[np.where(x_flat > 5100)]) != 0:
+
+    print("running convolution...")
+    
+    if y_flat[x_flat < 4500].mean() and y_flat[x_flat > 5100].mean() :
+        t1 = time.time()
+        
         runMCMC(wlog_input, fmean_input, x_flat, y_flat_sm,
                 y_flat, y_flat_err, spec,
                 posterior_save=spec.replace('.sav','') + '-Fe.p',
                 plot_save=spec.replace('.sav','') + '-Fe.pdf',
-                file_save=spec.replace('.sav','') + '-Fe.dat', plotChain=True)
+                file_save=spec.replace('.sav','') + '-Fe.dat',
+                plotChain=False)
+        t2 = time.time()
+        print('minimization took {} seconds'.format(t2 - t1))
+
+        
     else:
         print("wavelength range doesn't match")
         return -1
@@ -341,6 +381,7 @@ $python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspec
 
     if len(sys.argv) == 1:
         # use default arguments for testing
+        print ("\n\n Hallo!\n\nThis is a test using SN PTF10qts at phase 0")
         obsSpec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
         templSpec = 'meanspecIc_0.sav'
 
@@ -352,10 +393,7 @@ $python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspec
         print(helpStrg)
         sys.exit()
 
-    print("running convolution...")
     if conv(obsSpec, templSpec) == -1:
         print(helpStrg)
         sys.exit()
         
-    t2 = time.time()
-    print('minimization took {} seconds'.format(t2 - t1))
