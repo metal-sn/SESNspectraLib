@@ -31,13 +31,22 @@ The following chunk of Python is an example of **Ic_conv_Icbl_MCMC.py** in Pytho
 ```
 >>> import Ic_conv_Icbl_MCMC as Ic_conv_Icbl
 >>> Ic_conv_Icbl.conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
-Mean acceptance fraction: 0.559
+````
+or from the command line 
+``` 
+$python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.csv 0 Fe
+Working with element:  Fe
+reading inputs...
+running convolution...
+
+
+Mean acceptance fraction: 0.560
            16th            50th            84th   percentiles of marginalized distribution of model parameters
-         10.997          11.267          11.559   for v/1000 in km/s
-          4.083           4.445           4.802   for sigma/1000 in km/s
-          1.279           1.382           1.479   for amplitude
-          0.499           2.404           6.517   for wavelenght range in A
-minimization took 15.7108139992 seconds
+         10.989          11.265          11.579   for v/1000 in km/s
+          4.087           4.467           4.810   for sigma/1000 in km/s
+          1.290           1.391           1.496   for amplitude
+          0.801           2.661           6.236   for wavelenght range in A
+minimization took 8.29712605476 seconds
 ```
 The main plot out will look like this:
 ![alt tag](https://raw.githubusercontent.com/nyusngroup/SESNspectraLib/master/10qts_20100815_Lick_3-m_v1-z.flm-flat-Fe.png)
