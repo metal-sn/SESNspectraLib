@@ -1,6 +1,7 @@
 import numpy as np
 
 # initial parameter values
+
 # v/1000 in km/s, sigma/10 in angstrom, y-amplitude, wave-range in angstrom
 P0 = {'Fe' : np.array([11.0, 1.0, 1.0, 1.0])}
 
