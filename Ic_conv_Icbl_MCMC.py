@@ -59,9 +59,10 @@ def readdata(spec, template):
             template = ("IcTemplates/meanspecIc_%d.sav"%phase)
             s = readsav(template)            
         except ValueError:
-            s = readsav(template)            
+            s = readsav(template)
     except IOError:
-        print("Failing while reading the template", template)
+        
+        print("\nError: Failing while reading the template", template)
         print("You must pass 2 files as input: ")
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
@@ -87,7 +88,7 @@ def readdata(spec, template):
                 s2['flatflux_input_sm'] = tmp[1:,3].astype(float) 
                 
     except  Exception:
-        print("Failing while reading the input spectrum", spec)
+        print("\nFailing while reading the input spectrum", spec)
         print("You must pass 2 files as input: ")
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
@@ -370,8 +371,9 @@ def conv(spec, template, element):
     if element not in P0.keys() or element not in Prior.keys() or \
        element not in X0.keys():
 
+        print("\nElement not enabled:")
         print("You must set up the initial parameters and ")
-        print ("prior parameters for this element in P0, Prior and X0")
+        print("prior parameters for %s in elementsDicts.py\n"%element)
 
         return -1
     
@@ -383,7 +385,7 @@ def conv(spec, template, element):
         wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err = \
                                                     readdata(spec, template)
     except IOError:
-        print("must pass a .csv and a .sav file, or 2 .sav ")
+        print("\n\n You must pass a .csv and a .sav file, or 2 .sav ")
         print("files or a file and a phase as input")
         return -1
     if isinstance(wlog_input, int):
@@ -407,13 +409,15 @@ def conv(spec, template, element):
 
         
     else:
-        print("wavelength range doesn't match")
+        print("\nError: wavelength range doesn't match")
         return -1
     return 0
 if __name__ == '__main__':
 
     helpStrg = '''Arguments: observed spectrum and template spectrum: use as
-$python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspecIc_0.sav Fe'''
+$python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  meanspecIc_0.sav Fe
+or
+$python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  0 Fe'''
 
     element = 'Fe'
     if len(sys.argv) == 1:
