@@ -45,11 +45,10 @@ The main plot out will look like this:
 Note that the input spectra of **Ic_conv_Icbl_MCMC.py** are flattened by **snidflat.pro** in **snid_pro.tgz** which can be downloaded via [Stephane Blondin's webpage](https://people.lam.fr/blondin.stephane/software/snid/index.html#Download).
 
 ###Required packages:
-This code makes use of several default python packages, including NumPy, SciPy, and Matplotlib and a few additional packages:
+This code makes use of several default python packages, including [NumPy](http://www.numpy.org/), [SciPy](https://www.scipy.org/), [Matplotlib](http://matplotlib.org/) and [pickle](https://docs.python.org/2/library/pickle.html), and a few additional, less common, packages:
 
-- [pickle] (https://docs.python.org/2/library/pickle.html)
-- [emcee] (http://dan.iel.fm/emcee/current/)
-- [corner.py] (https://github.com/dfm/corner.py package) 
+- [emcee](http://dan.iel.fm/emcee/current/)
+- [corner](https://github.com/dfm/corner.py package) 
 
 If you use data products in this repository, please <b>cite</b> related references listed above. Here are the bibtex entries for your convenience.
 
