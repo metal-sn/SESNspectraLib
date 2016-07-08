@@ -59,6 +59,10 @@ def readdata(spec, template):
             template = ("IcTemplates/meanspecIc_%d.sav"%phase)
             s = readsav(template)            
         except ValueError:
+            try:
+                phase = int(template.split("_")[-1].replace(".sav",""))
+            except ValueError:
+                phase = np.nan
             s = readsav(template)
     except IOError:
         
@@ -66,7 +70,7 @@ def readdata(spec, template):
         print("You must pass 2 files as input: ")
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
-        print("  or a phase (integer number of days) if using the meantemplate distributed with this package\n")        
+        print("  or a phase (number of days since Vmax, min=-10 max=72) if using the meantemplate distributed with this package\n")        
         return [-1]*6
     
     # reads in spectrum        
@@ -109,7 +113,7 @@ def readdata(spec, template):
     # has one extra value at the end
     x_flat = np.array(s2['wavelog_input'][:y_flat.size])
 
-    return wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err
+    return wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err, phase
 
 
 def fittemplate(p, element, fmean_input, wlog_input,
@@ -317,27 +321,29 @@ def runMCMC(element, wlog_input, fmean_input,
         f.write('v/1000 in km/s, sigma/1000 in km/s, amplitude, ' +
                 'wave-range in angstrom' + '\n')
         f.write('initial guess: ' + str(p00) + '\n')
-        f.write('best value: ' + str(best_pos[-1]) + '\n')
+        f.write('best value: ' + \
+                ' '.join([str(bp) for bp in best_pos[-1]]) + '\n')
         f.write('16th, 50th, 84th percentiles \n')
-        f.write(str(np.percentile(sampler.chain[:
-            , :
-            , 0], [16, 50, 84])) +
+        f.write(' '.join([str(pc) \
+                          for pc in np.percentile(sampler.chain[:, :, 0],
+                                                  [16, 50, 84])]) +
                 ' for v/1000 in km/s\n')
-        f.write(str(np.percentile(sampler.chain[:
-            , :
-            , 1], [16, 50, 84])) +
-                ' for sigma/1000 in km/s\n')
-        f.write(str(np.percentile(sampler.chain[:
-            , :
-            , 2], [16, 50, 84])) +
-                ' for amplitude\n')
-        f.write(str(np.percentile(sampler.chain[:
-            , :
-            , 3], [16, 50, 84])) +
-                ' for wave-range in angstrom\n')
+        f.write(' '.join([str(pc) \
+                          for pc in np.percentile(sampler.chain[:, :, 1],
+                                                  [16, 50, 84])]) +
+                         ' for sigma/1000 in km/s\n')
+        f.write(' '.join([str(pc) \
+                          for pc in np.percentile(sampler.chain[:, :, 2],
+                                                  [16, 50, 84])]) +
+                         ' for amplitude\n')
+        f.write(' '.join([str(pc) \
+                          for pc in np.percentile(sampler.chain[:, :, 3],
+                                                  [16, 50, 84])]) +
+                         ' for wave-range in angstrom\n')
+        print "hererererere"
         f.close()
 
-    print("\n\nMean acceptance fraction: {0:.3f}"
+    print('Mean acceptance fraction: {0:.3f}'
           .format(np.mean(sampler.acceptance_fraction)))
     print('{0:10} {1:15} {2:15} {3:5}  percentiles of marginalized distribution of model parameters'\
           .format(" ", "16th", "50th", "84th"))
@@ -382,8 +388,9 @@ def conv(spec, template, element):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     try:
-        wlog_input, fmean_input, x_flat, y_flat_sm, y_flat, y_flat_err = \
-                                                    readdata(spec, template)
+        wlog_input, fmean_input, x_flat, y_flat_sm, \
+            y_flat, y_flat_err, phase = \
+                                        readdata(spec, template)
     except IOError:
         print("\n\n You must pass a .csv and a .sav file, or 2 .sav ")
         print("files or a file and a phase as input")
@@ -395,6 +402,8 @@ def conv(spec, template, element):
 
     print("running convolution...")
     
+    print('\n\nElement: {0}, Phase: {1:d}, input spectrum: {2}'\
+          .format(element, phase, spec) )
     if y_flat[x_flat < 4500].mean() and y_flat[x_flat > 5100].mean() :
         t1 = time.time()
         
@@ -424,7 +433,7 @@ $python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  0 Fe'''
         # use default arguments for testing
         print ("\n\n Hallo!\n\nThis is a test using SN PTF10qts at phase 0")
         obsSpec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
-        templSpec = 'meanspecIc_0.sav'
+        templSpec = 'IcTemplates/meanspecIc_0.sav'
 
     elif len(sys.argv) >= 3:
         # assume that you passed correctly the spectrum and template spectrum
