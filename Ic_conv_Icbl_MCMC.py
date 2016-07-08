@@ -404,7 +404,8 @@ def conv(spec, template, element):
     
     print('\n\nElement: {0}, Phase: {1:d}, input spectrum: {2}'\
           .format(element, phase, spec) )
-    if y_flat[x_flat < 4500].mean() and y_flat[x_flat > 5100].mean() :
+    if y_flat[x_flat < X0[element]['min']].mean() and \
+       y_flat[x_flat > X0[element]['max']].mean() :
         t1 = time.time()
         
         runMCMC(element, wlog_input, fmean_input, x_flat, y_flat_sm,
