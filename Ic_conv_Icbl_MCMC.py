@@ -336,30 +336,30 @@ def runMCMC(element, wlog_input, fmean_input,
                 ' for wave-range in angstrom\n')
         f.close()
 
-    print("Mean acceptance fraction: {0:.3f}"
+    print("\n\nMean acceptance fraction: {0:.3f}"
           .format(np.mean(sampler.acceptance_fraction)))
-    print('16th, 50th, 84th percentiles of marginalized distribution' +
-          'of model parameters')
+    print('{0:10} {1:15} {2:15} {3:5}  percentiles of marginalized distribution of model parameters'\
+          .format(" ", "16th", "50th", "84th"))
+
     # 16th, 50th, 84th percentiles of the velocity/1000
-    print(str(np.percentile(sampler.chain[:
-        , :
-        , 0], [16, 50, 84])) + \
-        ' for v/1000 in km/s')
+    pargs = np.percentile(sampler.chain[:, :, 0], [16, 50, 84])
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for v/1000 in km/s'\
+        .format(pargs[0], pargs[1], pargs[2]))
+    
     # 16th, 50th, 84th percentiles of the sigma/10000 in km/s
-    print(str(np.percentile(sampler.chain[:
-        , :
-        , 1], [16, 50, 84])) + \
-        ' for sigma/1000 in km/s')
+    pargs = np.percentile(sampler.chain[:, :, 1], [16, 50, 84])
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for sigma/1000 in km/s'\
+        .format(pargs[0], pargs[1], pargs[2]))
+
     # 16th, 50th, 84th percentiles of the amplitude
-    print(str(np.percentile(sampler.chain[:
-        , :
-        , 2], [16, 50, 84])) + \
-        ' for amplitude')
+    pargs = np.percentile(sampler.chain[:, :, 2], [16, 50, 84])
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for amplitude'\
+        .format(pargs[0], pargs[1], pargs[2]))
+
     # 16th, 50th, 84th percentiles of the wave-range in angstrom
-    print(str(np.percentile(sampler.chain[:
-        , :
-        , 3], [16, 50, 84])) + \
-        ' for wave-range in angstrom')
+    pargs = np.percentile(sampler.chain[:, :, 3], [16, 50, 84])
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for wavelenght range in A'\
+        .format(pargs[0], pargs[1], pargs[2]))
 
 
 def conv(spec, template, element):
