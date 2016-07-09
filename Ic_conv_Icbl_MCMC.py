@@ -289,7 +289,7 @@ def runMCMC(element, wlog_input, fmean_input,
                       quantiles=[0.16, 0.5, 0.84],
                       labels=[r"$v$ [10$^3$ km s$^{-1}$]",
                               "$\sigma$ [$10^3$ km s$^{-1}$]", "$a$",
-                              "$\Delta$$w$ [\AA]"])
+                              "$\Delta$$w$ [$\AA$]"])
         fig_corner.savefig(outdir + "/" + \
                            plot_save.replace('.pdf','Fit.pdf'))
         pl.close(fig_corner)
