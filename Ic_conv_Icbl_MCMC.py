@@ -173,7 +173,7 @@ def logprior(p, element):
     w_range = p[3]
     if s > Prior[element][2] and s < Prior[element][3] and \
        v > Prior[element][0] and v < Prior[element][1] and \
-       amplitude > Prior['Fe'][4] and amplitude < Prior['Fe'][5]:
+       amplitude > Prior[element][4] and amplitude < Prior[element][5]:
         return np.log(np.exp(-(w_range) ** 2 / (2 * 33 ** 2)))
     return -np.inf
 
@@ -192,11 +192,15 @@ def logp(p, element, x, y, s, fmean_input, wlog_input, x_flat, y_flat):
 
 def runMCMC(element, wlog_input, fmean_input,
             x_flat, y_flat_sm, y_flat, y_flat_err,
-            spec, x0=X0['Fe'], p00=P0['Fe'],
-            prior=Prior['Fe'], posterior_save=False,
+            spec, posterior_save=False,
             plot_save=False, file_save=False, plotChain=False):
+
     '''runMCMC: sample probability distribution using package emcee,
     and get marginalized distribution of model parameters  '''
+
+    x0 = X0[element]['cuts']
+    p00 = P0[element]
+    prior = Prior[element]
 
     ndim, nwalkers = 4, 6 * 2
 
@@ -340,7 +344,7 @@ def runMCMC(element, wlog_input, fmean_input,
                           for pc in np.percentile(sampler.chain[:, :, 3],
                                                   [16, 50, 84])]) +
                          ' for wave-range in angstrom\n')
-        print "hererererere"
+
         f.close()
 
     print('Mean acceptance fraction: {0:.3f}'
@@ -404,12 +408,13 @@ def conv(spec, template, element):
     
     print('\n\nElement: {0}, Phase: {1:d}, input spectrum: {2}'\
           .format(element, phase, spec) )
+
     if y_flat[x_flat < X0[element]['min']].mean() and \
        y_flat[x_flat > X0[element]['max']].mean() :
         t1 = time.time()
         
         runMCMC(element, wlog_input, fmean_input, x_flat, y_flat_sm,
-                y_flat, y_flat_err, spec,
+                y_flat, y_flat_err, spec, 
                 posterior_save=nameroot + '.p',
                 plot_save=nameroot + '.pdf',
                 file_save=nameroot + '.dat',
