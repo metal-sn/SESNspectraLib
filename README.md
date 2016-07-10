@@ -30,7 +30,7 @@ The following chunk of Python is an example of **Ic_conv_Icbl_MCMC.py** in Pytho
 
 ```
 >>> import Ic_conv_Icbl_MCMC as Ic_conv_Icbl
->>> Ic_conv_Icbl.conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.sav', 'meanspecIc_0.sav')
+>>> Ic_conv_Icbl.conv('10qts_20100815_Lick_3-m_v1-z.flm-flat.csv', 0, 'Fe')
 ````
 or from the command line 
 ``` 
