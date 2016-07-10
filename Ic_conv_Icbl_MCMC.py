@@ -40,7 +40,8 @@ outdir = "./outputs"
 
 # spectra range allowed: we restrict the usable wavelength range
 # generally the quality of IR spectra and the Fe blanketing in UV limit
-# the region of the spectrum where our method should be used
+# the region of the spectrum where our method should be used to avoid 
+# contribuion from the bump around 4000 A in Ic template
 Wlim = (4400, 9000)
 
 from elementDicts import *
@@ -99,7 +100,8 @@ def readdata(spec, template):
         print("  or a phase (integer number of days) if using the meantemplate distributed with this package\n")        
         return [-1]*6
 
-    # we restrict the range to 4400 9000 A where most spectra are well sampled
+    # we restrict the range to 4400 9000 A to avoid contribuion from the bump 
+    # around 4000 A in Ic template
     wlog_input = s['wlog'][(s['wlog'] > Wlim[0]) * (s['wlog'] < Wlim[1])]
     fmean_input = s.fmean[(s['wlog'] > Wlim[0]) * (s['wlog'] < Wlim[1])]
 
