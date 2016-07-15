@@ -1,17 +1,17 @@
 # SESNspectraLib
 
-This repository contains code that was used in [Liu et al. (2016)](http://arxiv.org/abs/1510.08049) and [Modjaz et al. (2016)](http://arxiv.org/abs/1509.07124) to process Stripped Envelope Supenova (SESNe) spectra. 
+This repository contains code that was used in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L) and [Modjaz et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv150907124M) to process spectra of Stripped Envelope Supenova (SESNe),i.e., SNe of types IIb, Ib, Ic and Ic-bl. 
 Common issues encountered in using SN spectral data include missing uncertainties and inhomogeneous measurements of the velocity for differen SN types. Our library intends to address these issues. 
 
 At this time two pieces of code are provided: 
-- **FFT_smooth.pro**: IDL routine to smooth SN spectra by separating SN signal from noise in Fourier space. It should be used to evaluate the uncertainty of spectra in absence of reduction-generated spectral uncertainty arrays, or to reaplce those in a comprehensive manner for a large and diverse dataset ([Liu et al. (2016)](http://arxiv.org/abs/1510.08049)).
-- **Ic_conv_Icbl_MCMC.py**: Python module to measure the absorption velocity of SN Ic-bl from the Fe II 5169 spectral feature. This code provides and implements a method to measure the spectral velocity of SN Ic-bl consistently with what is usually done for oher subtypes, for fair and meanungful comparisons, enabling the measurement of the Fe II 5169 blue-shift despite the fact that this feature is blended in Ic-bl specra (typically the Fe II triplet appears as a single blended feature in Ic-bl). The code measures the blue-shift and width of Fe II 5169 by matching the SN Ic-bl spectrum under consideration to a broadened and blueshifted SN Ic mean template at similar phases. We generally use it for Fe II 5169 ([Modjaz et al. (2016)](http://arxiv.org/abs/1509.07124)) but it can be used for other features as well.
+- **FFT_smooth.pro**: IDL routine to smooth SN spectra by separating SN signal from noise in Fourier space. It should be used to evaluate the uncertainty of spectra in absence of reduction-generated spectral uncertainty arrays, or to replace those in a comprehensive manner for a large and diverse dataset ([Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L)).
+- **Ic_conv_Icbl_MCMC.py**: Python module to measure the absorption velocity of SN Ic-bl from the Fe II 5169 spectral feature. This code provides and implements a method to measure the spectral velocity of SN Ic-bl consistently with what is usually done for oher subtypes, for fair and meanungful comparisons, enabling the measurement of the Fe II 5169 blue-shift despite the fact that this feature is blended in Ic-bl specra (typically the Fe II triplet appears as a single blended feature in Ic-bl). The code measures the blue-shift and width of Fe II 5169 by matching the SN Ic-bl spectrum under consideration to a broadened and blueshifted SN Ic mean template at similar phases. We use it for Fe II 5169 ([Modjaz et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv150907124M)) but it can be used in principle for other features as well.
 
 
-NOTE: When not specified otherwise (e.g. Ic_conv_Icbl) our code can be used on any medium resolution spectra of SNe of any type, although it is deisgned for and tested on SESN.
+NOTE: When not specified otherwise (e.g. Ic_conv_Icbl) our code can be used on any medium resolution spectra of SNe of any type, although it is designed for and tested on SESN.
 
 ### Examples
-The following chunk of IDL code is an example of **FFT_smooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://arxiv.org/abs/1510.08049):
+The following chunk of IDL code is an example of **FFT_smooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L):
 ```
 IDL> readcol, 'sn2004gq-20041212-z-bl.flm', w, f
 IDL> FFT_smooth, w, f, 1000, w_ft, f_ft, sep_vel

@@ -1,10 +1,10 @@
 PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 
-; Version 1.0, July 2016
+; For Release: Version 1.0, July 2016
 ; NAME:
 ;    FFT_SMOOTH
 ; PURPOSE:
-;    Smooth SN medium resolution spectrum by separating SN signal from noise in Fourier space
+;    To smooth SN medium resolution spectrum by separating SN signal from noise in Fourier space
 ; CALLING SEQUENCE:
 ;   FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ; INPUTS:
@@ -19,11 +19,14 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ;
 ; DEPENDENT PROCEDURE:
 ; binspec.pro (releaased as part of this repo)
+; 
+; WRITTEN BY: 
+; Yuqian Liu and the NYUSNgroup (https://github.com/nyusngroup/SESNspectraLib/) and released under DOI XXX
 
 !EXCEPT=2 ;allows IDL to report on the program context in which the error occurred, 
           ;along with the line number in the procedure.
 
-; conver to log(w) space
+; convert to log(w) space
       w_ln=alog(w)                 
       num=n_elements(w_ln)
       binsize = (w_ln[num-1]-w_ln[num-2])
@@ -33,7 +36,7 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
       w_ln_bin=w_ln_bin(where(f_bin NE 0))
       num_bin=n_elements(f_bin)
 
-; flourier transform
+; take flourier transform
       f_bin_ft=fft(f_bin,-1)*num_bin
 ; calculate frequency
       X = (FINDGEN((num_bin - 1)/2) + 1)
@@ -43,7 +46,7 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
       else $
          freq = [0.0, X, -(num_bin/2 + 1) + X]/num_bin
          
-; filtering spectra    
+; filter spectra    
       num_upper=max(where(1.0/freq[1:num_bin-1]*3.0e5*binsize GT cut_vel))
       num_lower=max(where(1.0/freq[1:num_bin-1]*3.0e5*binsize GT 1.0e5, num_num_lower))
       f_bin_ft_line=fltarr(num_upper)
@@ -52,7 +55,7 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
       intercept=mean(abs(f_bin_ft(num_lower :num_upper)))
       f_bin_ft_line=(f_bin_ft_line+1.0)*intercept ; a straight line along x axis
 
-      ; a power law fit to magnitudes with velocities smaller than 1.0e5 km/s
+      ; fit a power law to magnitudes with velocities smaller than 1.0e5 km/s
       g = linear_fit(alog(freq[num_lower :num_upper]), alog(f_bin_ft[num_lower :num_upper]))
       a = [10e1^(-g[0]/g[1]), g[1]]
       coeffs1=powerlaw_fit(freq(num_lower :num_bin/2), abs(f_bin_ft(num_lower :num_bin/2)), guess=a)
@@ -93,7 +96,7 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
          return
       endif
 
-      ; velocity separating spectral signal from the noise
+      ; find velocity separating spectral signal from the noise
       num_sep=min(where(delta LT 0)) 
       sep_vel=1.0/freq(num_sep)*3.0e5*binsize
 
