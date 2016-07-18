@@ -59,7 +59,7 @@ This code makes use of several default python packages, including [NumPy](http:/
 - [emcee](http://dan.iel.fm/emcee/current/)
 - [corner](https://github.com/dfm/corner.py package) 
 
-If you use data products in this repository, please <b>cite</b> related references listed above. Here are the bibtex entries for your convenience.
+If you use data products in this repository, please <b>cite</b> the following references. Here are the bibtex entries for your convenience, as well as the DOI from Zenodo for this repository (TO BE FINISHED).
 
 Modjaz et al. (2016):
 
