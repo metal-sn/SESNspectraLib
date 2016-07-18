@@ -1,8 +1,8 @@
-PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
+PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 
 ; For Release: Version 1.0, July 2016
 ; NAME:
-;    FFT_SMOOTH
+;    SNspecFFTsmooth
 ; PURPOSE:
 ;    To smooth SN medium resolution spectrum by separating SN signal from noise in Fourier space
 ; CALLING SEQUENCE:
@@ -10,8 +10,10 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ; INPUTS:
 ;   w = original wavelength, in angstrom (A)
 ;   f = original flux, in ergs/s/cm^2/A 
-;   cut_vel = assuming velocities smaller than cut_vel are inconsistent with the 
-;             velocity of SN spectral features, in km/s 
+;   cut_vel = velocity below which we assume that velocities are inconsistent with the velocity of SN spectral 
+;             features, in km/s, we find that 1000 km/s is a good working value for our data sets of SESNe (in Modjaz+16, Liu+16)
+;              
+;              
 ; OUTPUTS:
 ;   w_ft = wavelength corresponding to FFT smoothed flux
 ;   f_ft = FFT smoothed flux
@@ -25,6 +27,11 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 
 !EXCEPT=2 ;allows IDL to report on the program context in which the error occurred, 
           ;along with the line number in the procedure.
+
+;Define constant & parameter
+c_kms                 = 299792.47 ; speed of light in km/s
+vel_toolargeforSN_kms = 1.D5   ; Velocity limit for whose corresponding wavenumbers are not included in the fit 
+                              ;as they are too large to be associated with SN features (see discussion in Appendix of Liu+16)
 
 ; convert to log(w) space
       w_ln=alog(w)                 
@@ -47,11 +54,11 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
          freq = [0.0, X, -(num_bin/2 + 1) + X]/num_bin
          
 ; filter spectra    
-      num_upper=max(where(1.0/freq[1:num_bin-1]*3.0e5*binsize GT cut_vel))
-      num_lower=max(where(1.0/freq[1:num_bin-1]*3.0e5*binsize GT 1.0e5, num_num_lower))
+      num_upper=max(where(1.0/freq[1:num_bin-1]* c_kms *binsize GT cut_vel))
+      num_lower=max(where(1.0/freq[1:num_bin-1]* c_kms *binsize GT vel_toolargeforSN_kms, num_num_lower))
       f_bin_ft_line=fltarr(num_upper)
       
-      ; average magnitudes with velocities between 1.0e5 km/s and cut_vel      
+      ; average magnitudes with velocities between vel_toolargeforSN_kms and cut_vel      
       intercept=mean(abs(f_bin_ft(num_lower :num_upper)))
       f_bin_ft_line=(f_bin_ft_line+1.0)*intercept ; a straight line along x axis
 
@@ -96,11 +103,11 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
          return
       endif
 
-      ; find velocity separating spectral signal from the noise
+      ; find velocity that separates spectral signal from noise - by construction it will be between cut_vel and vel_toolargeforSN
       num_sep=min(where(delta LT 0)) 
       sep_vel=1.0/freq(num_sep)*3.0e5*binsize
 
-      ; remove all magnitudes with velocities smaller than sep_vel
+      ; remove all magnitudes with velocities smaller than sep_vel, i.e., smooth
       f_bin_ft_smooth=f_bin_ft/num_bin
       for j=1L, num_bin do begin
          if j lt num_bin/2+1 then $
@@ -112,10 +119,10 @@ PRO FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
          endif
       endfor    
      
-      ; inverse Fourier transform 
+      ; take the inverse Fourier transform 
       f_bin_ft_smooth_inv=float(fft(f_bin_ft_smooth,1))
       
-; output wavelength and FFT smoothed flux
+; output wavelength and FFT-smoothed flux
 w_ft = exp(w_ln_bin)
 f_ft = f_bin_ft_smooth_inv
 
