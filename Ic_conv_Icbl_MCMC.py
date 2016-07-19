@@ -23,7 +23,6 @@ Arguments:
 import sys
 import os
 import time
-import corner
 import emcee
 import pickle as pkl
 import numpy as np
@@ -34,7 +33,16 @@ from scipy.ndimage import filters
 from scipy.signal import gaussian
 from scipy.interpolate import interp1d
 from scipy.io.idl import readsav
-
+CORNER = True
+try:
+    import corner
+except ImportError:
+    print ('''You seem to be missing package corner (https://github.com/dfm/corner.py). 
+    We recomand you exit and install it, but if you wish you can type 'yes' to continue without the package. However you will not be able to plot important diagnostics''')
+    if raw_input().startswith('y'):
+        CORNER = False
+        pass
+    
 # output directory
 outdir = "./outputs"
 
@@ -285,14 +293,15 @@ def runMCMC(element, wlog_input, fmean_input,
 
         rcParams['xtick.labelsize'] = 22.
         rcParams['ytick.labelsize'] = 22.
-        fig_corner = corner.corner(sampler.flatchain, truths=value_50,
+        if CORNER:
+            fig_corner = corner.corner(sampler.flatchain, truths=value_50,
                       quantiles=[0.16, 0.5, 0.84],
                       labels=[r"$v$ [10$^3$ km s$^{-1}$]",
                               "$\sigma$ [$10^3$ km s$^{-1}$]", "$a$",
                               "$\Delta$$w$ [\AA]"])
-        fig_corner.savefig(outdir + "/" + \
-                           plot_save.replace('.pdf','Fit.pdf'))
-        pl.close(fig_corner)
+            fig_corner.savefig(outdir + "/" + \
+                               plot_save.replace('.pdf','Fit.pdf'))
+            pl.close(fig_corner)
 
         # save chain plot
         if plotChain:
