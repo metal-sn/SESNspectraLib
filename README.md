@@ -24,7 +24,7 @@ IDL> oplot, w_ft, f_ft, color=250
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.dat**, a text file that contains initial template fit region, mean acceptance fraction, initial values for parameters, and 16th, 50th, 84th percentiles of marginalized distribution of model parameters.
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.p**, a pickle file that contains marginalized distribution of model parameters.
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf**, a PDF file that contains template fit plot
-- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeFit.pdf** corner plot (produced using the [corner.py] (https://github.com/dfm/corner.py package) ) as a fit diagnosis
+- **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeFit.pdf** corner plot (produced using the [corner.py] (https://github.com/dfm/corner.py package) if the package is installed) as a fit diagnosis
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-FeChain.pdf** as an optional plot, and chain plot for the MCMC fit, as a fit diagnosis.
 
 
@@ -57,7 +57,7 @@ Note that the input spectra of **Ic_conv_Icbl_MCMC.py** are flattened by **snidf
 This code makes use of several default python packages, including [NumPy](http://www.numpy.org/), [SciPy](https://www.scipy.org/), [Matplotlib](http://matplotlib.org/) and [pickle](https://docs.python.org/2/library/pickle.html), and a few additional, less common, packages:
 
 - [emcee](http://dan.iel.fm/emcee/current/)
-- [corner](https://github.com/dfm/corner.py) 
+- [corner](https://github.com/dfm/corner.py) (optional, but recommanded: it generates plots of the marginalized distributions as visual diagnostics of your fit)
 
 If you use data products in this repository, please <b>cite</b> the following references. Here are the bibtex entries for your convenience, as well as the DOI from Zenodo for this repository (TO BE FINISHED).
 
