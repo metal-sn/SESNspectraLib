@@ -20,7 +20,9 @@ PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ;   sep_vel = velocity as determined in this code to separate SN spectral signal from the noise (in km/s)
 ;
 ; DEPENDENT PROCEDURE:
-; binspec.pro (releaased as part of this repo)
+; binspec.pro (released as part of this repo)
+; POWERLAW.pro (https://people.ok.ubc.ca/erosolo/idl/lib/powerlaw_fit.pro)
+; LINEAR.pro (https://people.ok.ubc.ca/erosolo/idl/lib/linear_fit.pro)
 ; 
 ; WRITTEN BY: 
 ; Yuqian Liu and the NYUSNgroup (https://github.com/nyusngroup/SESNspectraLib/) and released under DOI XXX
