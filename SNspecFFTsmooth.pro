@@ -62,7 +62,7 @@ vel_toolargeforSN_kms = 1.D5   ; Velocity limit for whose corresponding wavenumb
       intercept=mean(abs(f_bin_ft(num_lower :num_upper)))
       f_bin_ft_line=(f_bin_ft_line+1.0)*intercept ; a straight line along x axis
 
-      ; fit a power law to magnitudes with velocities smaller than 1.0e5 km/s
+      ; fit a power law to magnitudes with velocities smaller than vel_toolargeforSN_kms 
       g = linear_fit(alog(freq[num_lower :num_upper]), alog(f_bin_ft[num_lower :num_upper]))
       a = [10e1^(-g[0]/g[1]), g[1]]
       coeffs1=powerlaw_fit(freq(num_lower :num_bin/2), abs(f_bin_ft(num_lower :num_bin/2)), guess=a)
@@ -105,7 +105,7 @@ vel_toolargeforSN_kms = 1.D5   ; Velocity limit for whose corresponding wavenumb
 
       ; find velocity that separates spectral signal from noise - by construction it will be between cut_vel and vel_toolargeforSN
       num_sep=min(where(delta LT 0)) 
-      sep_vel=1.0/freq(num_sep)*3.0e5*binsize
+      sep_vel=1.0/freq(num_sep)* c_kms *binsize
 
       ; remove all magnitudes with velocities smaller than sep_vel, i.e., smooth
       f_bin_ft_smooth=f_bin_ft/num_bin
