@@ -10,29 +10,49 @@ blue-shift and broadening
 
 Arguments:
 
- flattened Ic-bl spectrum (use snidflat.pro) in .save IDL format
+ - flattened Ic-bl spectrum (use snidflat.pro) in .sav IDL or .csv format
+ - phase of the spectrum (from V max epoch in days) or full name of the template to be used (must be a .sav file in the templates
 
  the corresponding uncertainty array
+
+The file format is as follows:
+if spectrum in .csv file the .cvs columns must be 
+"wavelog_input,flatflux_input,flatflux_err_input,flatflux_input_sm"
+and the  line above must be included as header
+
  SNe Ic template
- Output:
+
+Output:
+ an output directory is created (default ./outputs) where the following outputs are saved (see Modjaz et al. 2016 for details):
+
+ - a pickle file od the distribution of absorption veolcities, line wihdths, and the normalizatin parameter 
+ - an ascii file with the distribution median , 16th and 84th percentage
+
+
  marginalized distribution of model parameters, including but not
- limited to absorption velocity, see Modjaz et al. (2016) for details
- Note: initial values and prior of model parameters, and region to find
- initial template fitting region can be changed as needed
+ limited to absorption velocity, 
+ Note: initial values and prior of model parameters and region to find
+ initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed
 '''
+
 import sys
 import os
 import time
 import emcee
 import pickle as pkl
 import numpy as np
+import matplotlib as mpl
+mpl.use('Agg')
+
 import pylab as pl
 from matplotlib import  rcParams
 from matplotlib.ticker import MultipleLocator
+
 from scipy.ndimage import filters
 from scipy.signal import gaussian
 from scipy.interpolate import interp1d
 from scipy.io.idl import readsav
+
 CORNER = True
 try:
     import corner
@@ -73,6 +93,7 @@ def readdata(spec, template):
             except ValueError:
                 phase = np.nan
             s = readsav(template)
+    
     except IOError:
         
         print("\nError: Failing while reading the template", template)
@@ -80,7 +101,7 @@ def readdata(spec, template):
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
         print("  or a phase (number of days since Vmax, min=-10 max=72) if using the meantemplate distributed with this package\n")        
-        return [-1]*6
+        return [-1] * 7
     
     # reads in spectrum        
     try:
@@ -91,7 +112,7 @@ def readdata(spec, template):
                 # read csv in with pandas if installed
                 import pandas as pd
                 s2 = pd.read_csv(spec).to_dict(orient="list")
-            except ImportError:
+            except TypeError, ImportError:
                 # read csv with numpy and convert it to dictionary
                 tmp = np.genfromtxt(spec, delimiter=',', dtype=None)
                 s2 = {}
@@ -100,14 +121,15 @@ def readdata(spec, template):
                 s2['flatflux_err_input'] = tmp[1:,2].astype(float) 
                 s2['flatflux_input_sm'] = tmp[1:,3].astype(float) 
                 
-    except  Exception:
+    
+    except Exception:
         print("\nFailing while reading the input spectrum", spec)
         print("You must pass 2 files as input: ")
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
-        print("  or a phase (integer number of days) if using the meantemplate distributed with this package\n")        
-        return [-1]*6
-
+        print("  or a phase (integer number of days) if using the meantemplate distributed with this package\n")
+        return [-1] * 7
+    
     # we restrict the range to 4400 9000 A to avoid contribuion from the bump 
     # around 4000 A in Ic template
     wlog_input = s['wlog'][(s['wlog'] > Wlim[0]) * (s['wlog'] < Wlim[1])]
