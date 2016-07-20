@@ -1,5 +1,5 @@
 from __future__ import print_function
-
+__author__='Yuqian Liu yl1260@nyu.edu '
 # -*- coding: utf-8 -*-
 ##############################################################################
 '''
@@ -33,6 +33,11 @@ Output:
  limited to absorption velocity, 
  Note: initial values and prior of model parameters and region to find
  initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed
+
+Author:
+ Yuqian Liu, NYU 2016 yl1260@nyu.edu 
+ Federica Bianco, NYU 2016 fb55@nyu.edu
+
 '''
 
 import sys
@@ -43,7 +48,6 @@ import pickle as pkl
 import numpy as np
 import matplotlib as mpl
 mpl.use('Agg')
-
 import pylab as pl
 from matplotlib import  rcParams
 from matplotlib.ticker import MultipleLocator
