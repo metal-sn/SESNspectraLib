@@ -1,5 +1,5 @@
 from __future__ import print_function
-
+__author__='Yuqian Liu yl1260@nyu.edu '
 # -*- coding: utf-8 -*-
 ##############################################################################
 '''
@@ -33,6 +33,11 @@ Output:
  limited to absorption velocity, 
  Note: initial values and prior of model parameters and region to find
  initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed
+
+Author:
+ Yuqian Liu, NYU 2016 yl1260@nyu.edu 
+ Federica Bianco, NYU 2016 fb55@nyu.edu
+
 '''
 
 import sys
@@ -43,7 +48,6 @@ import pickle as pkl
 import numpy as np
 import matplotlib as mpl
 mpl.use('Agg')
-
 import pylab as pl
 from matplotlib import  rcParams
 from matplotlib.ticker import MultipleLocator
@@ -112,7 +116,7 @@ def readdata(spec, template):
                 # read csv in with pandas if installed
                 import pandas as pd
                 s2 = pd.read_csv(spec).to_dict(orient="list")
-            except TypeError, ImportError:
+            except (TypeError, ImportError):
                 # read csv with numpy and convert it to dictionary
                 tmp = np.genfromtxt(spec, delimiter=',', dtype=None)
                 s2 = {}
@@ -346,7 +350,7 @@ def runMCMC(element, wlog_input, fmean_input,
 
 
     # save initial template fit region, mean acceptance fraction, initial
-    # values for parameters, and 16th, 50th, 84th percentiles of marginalized
+    # values for parameters, and 0.15,2.5,16th, 50th, 84th,97.5,99.85 percentiles of marginalized
     # distribution of model parameters
     if file_save:
         f = open(outdir + "/" + file_save, 'w')
@@ -360,22 +364,22 @@ def runMCMC(element, wlog_input, fmean_input,
         f.write('initial guess: ' + str(p00) + '\n')
         f.write('best value: ' + \
                 ' '.join([str(bp) for bp in best_pos[-1]]) + '\n')
-        f.write('16th, 50th, 84th percentiles \n')
-        f.write(' '.join([str(pc) \
+        f.write('0.15th, 2.5th, 16th, 50th, 84th, 97.5, 99.85th percentiles \n')
+        f.write(' '.join(['%.2f'%pc  \
                           for pc in np.percentile(sampler.chain[:, :, 0],
-                                                  [16, 50, 84])]) +
+                                                  [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                 ' for v/1000 in km/s\n')
-        f.write(' '.join([str(pc) \
+        f.write(' '.join(['%.2f'%pc \
                           for pc in np.percentile(sampler.chain[:, :, 1],
-                                                  [16, 50, 84])]) +
+                                                  [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                          ' for sigma/1000 in km/s\n')
-        f.write(' '.join([str(pc) \
+        f.write(' '.join(['%.2f'%pc \
                           for pc in np.percentile(sampler.chain[:, :, 2],
-                                                  [16, 50, 84])]) +
+                                                  [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                          ' for amplitude\n')
-        f.write(' '.join([str(pc) \
+        f.write(' '.join(['%.2f'%pc  \
                           for pc in np.percentile(sampler.chain[:, :, 3],
-                                                  [16, 50, 84])]) +
+                                                  [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                          ' for wave-range in angstrom\n')
 
         f.close()
