@@ -1,4 +1,4 @@
-PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, sep_vel
+PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, f_std, sep_vel
 
 ; For Release: Version 1.0, July 2016
 ; NAME:
@@ -17,6 +17,7 @@ PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 ; OUTPUTS:
 ;   w_ft = wavelength corresponding to FFT smoothed flux
 ;   f_ft = FFT smoothed flux
+;   f_std = uncertainty array
 ;   sep_vel = velocity as determined in this code to separate SN spectral signal from the noise (in km/s)
 ;
 ; DEPENDENT PROCEDURE:
@@ -34,6 +35,7 @@ PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, sep_vel
 c_kms                 = 299792.47 ; speed of light in km/s
 vel_toolargeforSN_kms = 1.D5   ; Velocity limit for whose corresponding wavenumbers are not included in the fit 
                               ;as they are too large to be associated with SN features (see discussion in Appendix of Liu+16)
+width                 = 100  ; width in angstrom to calculate uncertainty arrary 
 
 ; convert to log(w) space
       w_ln=alog(w)                 
@@ -127,5 +129,22 @@ vel_toolargeforSN_kms = 1.D5   ; Velocity limit for whose corresponding wavenumb
 ; output wavelength and FFT-smoothed flux
 w_ft = exp(w_ln_bin)
 f_ft = f_bin_ft_smooth_inv
+print, num_bin
+print, n_elements(f_ft)
+
+; calculate uncertainty array
+bin_size=fix(width/(w_ft[2]-w_ft[1])) ; window in number of bins
+f_std=fltarr(num_bin)
+for j=bin_size/2, num_bin-bin_size/2-1 do begin
+   f_std[j]=stddev(f_ft[j-bin_size/2:j+bin_size/2])
+endfor
+for j=1, bin_size/2-1 do begin
+   f_std[j]=stddev(f_ft[0:2*j])
+endfor
+for j=num_bin-bin_size/2, num_bin-2 do begin
+   f_std[j]=stddev(f_ft[2*j-num_bin+1:num_bin-1])
+endfor
+f_std[0]=abs(f_ft[0])
+f_std[num_bin-1]=abs(f_ft[num_bin-1])
 
 END
