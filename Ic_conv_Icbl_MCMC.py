@@ -361,19 +361,19 @@ def runMCMC(element, wlog_input, fmean_input,
         f.write('best value: ' + \
                 ' '.join([str(bp) for bp in best_pos[-1]]) + '\n')
         f.write('0.15th, 2.5th, 16th, 50th, 84th, 97.5, 99.85th percentiles \n')
-        f.write(' '.join([str(pc) \
+        f.write(' '.join(['%.2f'%pc  \
                           for pc in np.percentile(sampler.chain[:, :, 0],
                                                   [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                 ' for v/1000 in km/s\n')
-        f.write(' '.join([str(pc) \
+        f.write(' '.join(['%.2f'%pc \
                           for pc in np.percentile(sampler.chain[:, :, 1],
                                                   [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                          ' for sigma/1000 in km/s\n')
-        f.write(' '.join([str(pc) \
+        f.write(' '.join(['%.2f'%pc \
                           for pc in np.percentile(sampler.chain[:, :, 2],
                                                   [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                          ' for amplitude\n')
-        f.write(' '.join([str(pc) \
+        f.write(' '.join(['%.2f'%pc  \
                           for pc in np.percentile(sampler.chain[:, :, 3],
                                                   [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
                          ' for wave-range in angstrom\n')
