@@ -98,10 +98,10 @@ width                 = 100  ; width in angstrom to calculate uncertainty arrary
          delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-mag_average 
       endif
 
-      ; if there is still no intersection after trying a few initial guess values, then return, and let
-      ; the user try a few more intial guess values by modifying the initial guesses above
+      ; if there is still no intersection after trying the above initial guess values (very rare), then return and exit. However,
+      ; the user is of course welcome to modify the initial guesses above for their cases by modifying the code ...
       if max(delta) lt 0 then begin
-         print, 'try another initial guess value for power law fit'
+         print, 'Exit: returning to command line - user is welcome to try other guess value for power law fit my modifying the code'
          return
       endif
 
@@ -130,7 +130,7 @@ f_ft = f_bin_ft_smooth_inv
 print, num_bin
 print, n_elements(f_ft)
 
-; calculate uncertainty array
+; calculate uncertainty array 
 bin_size=fix(width/(w_ft[2]-w_ft[1])) ; window in number of bins
 f_std=fltarr(num_bin)
 for j=bin_size/2, num_bin-bin_size/2-1 do begin
