@@ -3,21 +3,24 @@ __author__='Yuqian Liu yl1260@nyu.edu '
 # -*- coding: utf-8 -*-
 ##############################################################################
 '''
-Fits a SN template spectrum to a SN observed spectrum 
-to measure spectral features
-blue-shift and broadening
+Fits a template SN spectrum to an observed SN spectrum to measure spectral features
+that are blue-shifted and broadened with respect to the template
 
 
 Arguments:
 
- - flattened Ic-bl spectrum (use snidflat.pro) in .csv IDL or .sav format
- - phase of the spectrum (from V max epoch in days) or full name of the template to be used (must be a .sav file in the templates
-
-The flattened Ic-bl spectrum contains the following variables:
-wavelog_input: wavelength
-flatflux_input: flattened spectrum, can be done with snidflat.pro (as mentioned in README) or other methods 
-flatflux_input_sm: smoothed spectrum, can be done with SNspecFFTsmooth.pro in this repository or other methods 
-flatflux_err_input: uncertainty array, can be done with SNspecFFTsmooth.pro in this repository or other methods
+ - flattened Ic-bl spectrum (see below) in .csv or .sav IDL format
+ - phase of the template spectrum (with respect to V max, in days, from -10 to 72, in increments of 2 day) 
+   OR 
+   full name of the template to be used (must be a .sav file in the subdirectory "/Ictemplates")
+ - which line to fit (for now we have used and tested this code for Fe I 5169, so the default will be 'Fe', but can be extended)
+ 
+The flattened Ic-bl spectrum file needs to contain the following variables:
+wavelog_input: wavelength in Angstrom
+flatflux_input: flattened (i.e., continuum-removed) spectrum, can be produced with snidflat.pro (as mentioned in README) or other methods 
+flatflux_input_sm: smoothed flattened spectrum, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods 
+flatflux_err_input: uncertainty array, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods
+DISCLAIMER: our code has been tested for spectra produced by snidflat.pro and SNspecFFTsmooth.pro, not for any other methods
 
 The file format is as follows:
 If a spectrum is in .csv file, the .csv columns must contain the above four variables
@@ -27,14 +30,13 @@ with the *same variable names*.
 
 
 Output:
- an output directory is created (default ./outputs) where the following outputs are saved (see Modjaz et al. 2016 for details):
+ an output directory is created (default ./outputs) where the following outputs are saved (see Appendix of Modjaz et al. 2016 for details):
 
- - a pickle file od the distribution of absorption veolcities, line wihdths, and the normalizatin parameter 
- - an ascii file with the distribution median , 16th and 84th percentage
+ - a pickle file of the distribution of absorption velocities, line widths, and the normalization parameter 
+ - an ascii file with the distribution median, 16th, and 84th percentage
 
 
- marginalized distribution of model parameters, including but not
- limited to absorption velocity, 
+ marginalized distribution of model parameters, including but not limited to absorption velocity, 
  Note: initial values and prior of model parameters and region to find
  initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed
 
@@ -66,7 +68,7 @@ try:
     import corner
 except ImportError:
     print ('''You seem to be missing package corner (https://github.com/dfm/corner.py). 
-    We recomand you exit and install it, but if you wish you can type 'yes' to continue without the package. However you will not be able to plot important diagnostics''')
+    We recommend you exit and install it, but if you wish you can type 'yes' to continue without the package. However you will not be able to plot important diagnostics''')
     if raw_input().startswith('y'):
         CORNER = False
         pass
