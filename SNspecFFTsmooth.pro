@@ -60,11 +60,9 @@ width                 = 100  ; width in angstrom to calculate uncertainty arrary
 ; filter spectra    
       num_upper=max(where(1.0/freq[1:num_bin-1]* c_kms *binsize GT cut_vel))
       num_lower=max(where(1.0/freq[1:num_bin-1]* c_kms *binsize GT vel_toolargeforSN_kms, num_num_lower))
-      f_bin_ft_line=fltarr(num_upper)
       
       ; average magnitudes with velocities between vel_toolargeforSN_kms and cut_vel      
-      intercept=mean(abs(f_bin_ft(num_lower :num_upper)))
-      f_bin_ft_line=(f_bin_ft_line+1.0)*intercept ; a straight line along x axis
+      mag_average=mean(abs(f_bin_ft(num_lower :num_upper)))
 
       ; fit a power law to magnitudes with velocities smaller than vel_toolargeforSN_kms 
       g = linear_fit(alog(freq[num_lower :num_upper]), alog(f_bin_ft[num_lower :num_upper]))
@@ -72,7 +70,7 @@ width                 = 100  ; width in angstrom to calculate uncertainty arrary
       coeffs1=powerlaw_fit(freq(num_lower :num_bin/2), abs(f_bin_ft(num_lower :num_bin/2)), guess=a)
 
       ; find the intersection between average magnitudes and the power law fit
-      delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-intercept
+      delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-mag_average
 
       ; if there is no intersection, then re-fit power law using different initial guess values
       if (max(delta) lt 0) and (num_upper*2 le num_bin/2) then begin
@@ -81,7 +79,7 @@ width                 = 100  ; width in angstrom to calculate uncertainty arrary
          a = [10e1^(-g[0]/g[1]), g[1]]
                   
          coeffs1=powerlaw_fit(freq(num_lower :num_bin/2), abs(f_bin_ft(num_lower :num_bin/2)),guess=a)
-         delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-intercept 
+         delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-mag_average 
       endif
       if max(delta) lt 0 then begin
          ; initial guess      
@@ -89,7 +87,7 @@ width                 = 100  ; width in angstrom to calculate uncertainty arrary
          a = [10e1^(-g[0]/g[1]), g[1]]
 
          coeffs1=powerlaw_fit(freq(num_lower :num_bin/2), abs(f_bin_ft(num_lower :num_bin/2)),guess=a)
-         delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-intercept 
+         delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-mag_average 
       endif
       if max(delta) lt 0 then begin
          ; initial guess      
@@ -97,11 +95,11 @@ width                 = 100  ; width in angstrom to calculate uncertainty arrary
          a = [10e1^(-g[0]/g[1]), g[1]]
 
          coeffs1=powerlaw_fit(freq(num_lower :num_bin/2), abs(f_bin_ft(num_lower :num_bin/2)),guess=a)
-         delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-intercept 
+         delta=(freq(1:num_bin/2)/coeffs1[0])^coeffs1[1]-mag_average 
       endif
 
       ; if there is still no intersection after trying a few initial guess values, then return, and let
-      ; the user try a few more intial guess values
+      ; the user try a few more intial guess values by modifying the initial guesses above
       if max(delta) lt 0 then begin
          print, 'try another initial guess value for power law fit'
          return
