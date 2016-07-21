@@ -13,7 +13,8 @@ Arguments:
  - phase of the template spectrum (with respect to V max, in days, from -10 to 72, in increments of 2 day) 
    OR 
    full name of the template to be used (must be a .sav file in the subdirectory "/Ictemplates")
- - which line to fit (for now we have used and tested this code for Fe I 5169, so the default will be 'Fe', but can be extended)
+ - which line element to fit (optional. For now we have used and tested this code for Fe I 5169, 
+ so the default will be 'Fe', but can be extended)
  
 The flattened Ic-bl spectrum file needs to contain the following variables:
 wavelog_input: wavelength in Angstrom
@@ -34,9 +35,9 @@ Output:
 
  - a pickle file od the distribution of absorption veolcities, line wihdths, and the normalizatin parameter 
  - an ascii file with the distribution median , 0.15th, 2.5th, 16th, 50th, 84th, 97.5, 99.85th percentailes f the marginalized distribution of model parameters: (absorption velocity, line width, and normalization).
- - a plots of the fit
+ - a plot of the fit
  - a plot of the marginalized distribution if the corner.py package is installed
- - the MCMC walkers, if requested.
+ - a plot of the MCMC walkers, if requested.
 
  Note: initial values and prior of model parameters and region to find
  initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed.
