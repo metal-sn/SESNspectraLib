@@ -15,9 +15,9 @@ Arguments:
 
 The flattened Ic-bl spectrum contains the following variables:
 wavelog_input: wavelength
-flatflux_input: flattened spectrum 
-flatflux_input_sm: FFT smoothed spectrum 
-flatflux_err_input: uncertainty array
+flatflux_input: flattened spectrum, can be done with snidflat.pro (as mentioned in README) or other methods 
+flatflux_input_sm: smoothed spectrum, can be done with SNspecFFTsmooth.pro in this repository or other methods 
+flatflux_err_input: uncertainty array, can be done with SNspecFFTsmooth.pro in this repository or other methods
 
 The file format is as follows:
 If a spectrum is in .csv file, the .csv columns must contain the above four variables
