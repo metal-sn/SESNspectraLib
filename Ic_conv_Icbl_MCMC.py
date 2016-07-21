@@ -10,17 +10,21 @@ blue-shift and broadening
 
 Arguments:
 
- - flattened Ic-bl spectrum (use snidflat.pro) in .sav IDL or .csv format
+ - flattened Ic-bl spectrum (use snidflat.pro) in .csv IDL or .sav format
  - phase of the spectrum (from V max epoch in days) or full name of the template to be used (must be a .sav file in the templates
 
- the corresponding uncertainty array
+The flattened Ic-bl spectrum contains the following variables:
+wavelog_input: wavelength
+flatflux_input: flattened spectrum 
+flatflux_input_sm: FFT smoothed spectrum 
+flatflux_err_input: uncertainty array
 
 The file format is as follows:
-if spectrum in .csv file the .cvs columns must be 
-"wavelog_input,flatflux_input,flatflux_err_input,flatflux_input_sm"
-and the  line above must be included as header
+If a spectrum is in .csv file, the .csv columns must contain the above four variables
+and the same variable names must be included as header;
+If a spectrum is in .sav file, the stored variables must contain the above four variables
+with the same name.
 
- SNe Ic template
 
 Output:
  an output directory is created (default ./outputs) where the following outputs are saved (see Modjaz et al. 2016 for details):
