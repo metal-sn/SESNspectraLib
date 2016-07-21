@@ -136,12 +136,14 @@ f_std=fltarr(num_bin)
 for j=bin_size/2, num_bin-bin_size/2-1 do begin
    f_std[j]=stddev(f_ft[j-bin_size/2:j+bin_size/2])
 endfor
+; for data points near edges
 for j=1, bin_size/2-1 do begin
    f_std[j]=stddev(f_ft[0:2*j])
 endfor
 for j=num_bin-bin_size/2, num_bin-2 do begin
    f_std[j]=stddev(f_ft[2*j-num_bin+1:num_bin-1])
 endfor
+; for the first and the last data points
 f_std[0]=abs(f_ft[0])
 f_std[num_bin-1]=abs(f_ft[num_bin-1])
 
