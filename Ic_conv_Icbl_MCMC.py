@@ -32,13 +32,14 @@ with the *same variable names*.
 Output:
  an output directory is created (default ./outputs) where the following outputs are saved (see Appendix of Modjaz et al. 2016 for details):
 
- - a pickle file of the distribution of absorption velocities, line widths, and the normalization parameter 
- - an ascii file with the distribution median, 16th, and 84th percentage
+ - a pickle file od the distribution of absorption veolcities, line wihdths, and the normalizatin parameter 
+ - an ascii file with the distribution median , 0.15th, 2.5th, 16th, 50th, 84th, 97.5, 99.85th percentailes f the marginalized distribution of model parameters: (absorption velocity, line width, and normalization).
+ - a plots of the fit
+ - a plot of the marginalized distribution if the corner.py package is installed
+ - the MCMC walkers, if requested.
 
-
- marginalized distribution of model parameters, including but not limited to absorption velocity, 
  Note: initial values and prior of model parameters and region to find
- initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed
+ initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed.
 
 Author:
  Yuqian Liu, NYU 2016 yl1260@nyu.edu 
