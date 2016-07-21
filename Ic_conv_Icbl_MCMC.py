@@ -21,9 +21,9 @@ flatflux_err_input: uncertainty array
 
 The file format is as follows:
 If a spectrum is in .csv file, the .csv columns must contain the above four variables
-and the same variable names must be included as header;
+and the *same variable names* must be included as header;
 If a spectrum is in .sav file, the stored variables must contain the above four variables
-with the same name.
+with the *same variable names*.
 
 
 Output:
