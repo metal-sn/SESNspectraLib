@@ -39,6 +39,13 @@ Output:
  - a plot of the marginalized distribution if the corner.py package is installed
  - a plot of the MCMC "walkers" if explicitly requested.
 
+The code optimizes over the following physical paramters:
+ - blue-shift (velocity) of the spectral feature
+ - broadening of the spectral feature
+and the following model parameters:
+ - amplitude of the feature peaks (a normalization)
+ - wavelength region used for the fit as an offset from the peak-to-peak width of the feature as calculated from the smooth spectrum
+
  Note: the initial values, prior of model parameters, and
  initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed, to modify the Fe fit or to add fits for other elements.
 
@@ -109,7 +116,7 @@ def readdata(spec, template):
     except IOError:
         
         print("\nError: Failing while reading the template", template)
-        print("You must pass 2 files as input: ")
+        print("You must pass 2 files as input (and optionally the element to fit): ")
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
         print("  or a phase (number of days since Vmax, min=-10 max=72) if using the meantemplate distributed with this package\n")        
@@ -399,23 +406,23 @@ def runMCMC(element, wlog_input, fmean_input,
 
     # 16th, 50th, 84th percentiles of the velocity/1000
     pargs = np.percentile(sampler.chain[:, :, 0], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for v/1000 in km/s'\
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BLUE-SHIFT: v/1000 in km/s'\
         .format(pargs[0], pargs[1], pargs[2]))
     
     # 16th, 50th, 84th percentiles of the sigma/10000 in km/s
     pargs = np.percentile(sampler.chain[:, :, 1], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for sigma/1000 in km/s'\
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BROADENING sigma/1000 in km/s'\
         .format(pargs[0], pargs[1], pargs[2]))
 
     # 16th, 50th, 84th percentiles of the amplitude
     pargs = np.percentile(sampler.chain[:, :, 2], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for amplitude'\
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   NORMALIZATION: amplitude'\
         .format(pargs[0], pargs[1], pargs[2]))
 
     # 16th, 50th, 84th percentiles of the wave-range in angstrom
     pargs = np.percentile(sampler.chain[:, :, 3], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   for wavelenght range in A'\
-        .format(pargs[0], pargs[1], pargs[2]))
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   WAVELENGTH RANGE ADJUSTMENT from {3:.2f} in A'\
+        .format(pargs[0], pargs[1], pargs[2], elx[-1] - elx[0]))
 
 
 def conv(spec, template, element):
