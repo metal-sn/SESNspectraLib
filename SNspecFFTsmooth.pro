@@ -130,7 +130,7 @@ f_ft = f_bin_ft_smooth_inv
 print, num_bin
 print, n_elements(f_ft)
 
-; calculate uncertainty array by taking STDEV on running rolling mean of width window  "width" as defined above
+; calculate uncertainty array by calculating STDDEV within a rolling window (that has a width "width" as defined above).
 bin_size=fix(width/(w_ft[2]-w_ft[1])) ; width window in number of bins
 f_std=fltarr(num_bin)
 for j=bin_size/2, num_bin-bin_size/2-1 do begin
