@@ -46,7 +46,7 @@ Output:
 
 The code optimizes over the following physical paramters:
  - blue-shift (velocity) of the spectral feature
- - broadening of the spectral feature
+ - broadening (velocity) of the spectral feature
 and the following model parameters:
  - amplitude of the feature peaks (a normalization)
  - adjustment of the default wavelength region used for the fit. The default is the peak-to-peak width of the feature as calculated from the smoothed spectrum.
@@ -379,7 +379,7 @@ def runMCMC(element, wlog_input, fmean_input,
     if file_save:
         f = open(outdir + "/" + file_save, 'w')
         f.write('region to find initial template fit region:' + str(x0) + '\n')
-        f.write("emcee Mean acceptance fraction: {0:.3f} \n"
+        f.write("emcee mean acceptance fraction: {0:.3f} \n"
                 .format(np.mean(sampler.acceptance_fraction)))
         f.write('uniform prior for v/1000 in km/s, sigma/10 in angstrom, ' +
                 'amplitude: ' + str(prior) + '\n')
@@ -392,7 +392,7 @@ def runMCMC(element, wlog_input, fmean_input,
         f.write(' '.join(['%.2f'%pc  \
                           for pc in np.percentile(sampler.chain[:, :, 0],
                                                   [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
-                '  BLUE-SHIFT: v/1000 in km/s\n')
+                '  BLUE-SHIFT v/1000 in km/s\n')
         f.write(' '.join(['%.2f'%pc \
                           for pc in np.percentile(sampler.chain[:, :, 1],
                                                   [0.15, 2.5, 16, 50, 84, 97.5, 99.85])]) +
@@ -408,14 +408,14 @@ def runMCMC(element, wlog_input, fmean_input,
 
         f.close()
 
-    print('emcee Mean acceptance fraction: {0:.3f}'
+    print('emcee Mman acceptance fraction: {0:.3f}'
           .format(np.mean(sampler.acceptance_fraction)))
     print('{0:10} {1:15} {2:15} {3:5}  percentiles of marginalized distribution of model parameters'\
           .format(" ", "16th", "50th", "84th"))
 
     # 16th, 50th, 84th percentiles of the velocity/1000
     pargs = np.percentile(sampler.chain[:, :, 0], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BLUE-SHIFT: v/1000 in km/s'\
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BLUE-SHIFT v/1000 in km/s'\
         .format(pargs[0], pargs[1], pargs[2]))
     
     # 16th, 50th, 84th percentiles of the sigma/10000 in km/s
@@ -425,7 +425,7 @@ def runMCMC(element, wlog_input, fmean_input,
 
     # 16th, 50th, 84th percentiles of the amplitude
     pargs = np.percentile(sampler.chain[:, :, 2], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   NORMALIZATION: amplitude'\
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   NORMALIZATION amplitude'\
         .format(pargs[0], pargs[1], pargs[2]))
 
     # 16th, 50th, 84th percentiles of the wave-range in angstrom
