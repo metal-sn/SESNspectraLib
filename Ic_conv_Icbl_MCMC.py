@@ -10,7 +10,7 @@ Measures broadening and blue-shift of the SN features with respect to the templa
 Arguments:
 
  - flattened Ic-bl spectrum (see below) in .csv or .sav IDL format
- - phase of the template spectrum (with respect to V max, in days, from -10 to 72, in increments of 2 day) 
+ - phase of the template spectrum (with respect to V max, in days, from -10 to 72, in increments of 2 days) 
    OR 
    full name of the template to be used (must be a .sav file in the subdirectory "/Ictemplates")
  - which line element to fit (optional. For now we have used and tested this code for Fe II 5169, 
@@ -49,7 +49,7 @@ The code optimizes over the following physical paramters:
  - broadening of the spectral feature
 and the following model parameters:
  - amplitude of the feature peaks (a normalization)
- - wavelength region used for the fit as an offset from the peak-to-peak width of the feature as calculated from the smooth spectrum
+ - adjustment of the default wavelength region used for the fit. The default is the peak-to-peak width of the feature as calculated from the smoothed spectrum.
 
  Note: the initial values, prior of model parameters, and
  initial template fitting region are specified in the element.Dicts.py file, 
@@ -59,6 +59,7 @@ and the following model parameters:
 Author:
  Yuqian Liu, NYU 2016 yl1260@nyu.edu 
  Federica Bianco, NYU 2016 fb55@nyu.edu
+ Maryam Modjaz, NYU 2016 mmodjaz@nyu.edu
 
 '''
 
@@ -103,8 +104,8 @@ from elementDicts import *
 
 
 def readdata(spec, template):
-    ''' readdata: read in flattened Ic-bl spectrum and the corresponding
-    uncertainty array,  SNe Ic template '''
+    ''' readdata: reads in the flattened SN spectrum, the smoothed flattened spectrum 
+    and the corresponding uncertainty array, and the SNe Ic template '''
 
     print("reading inputs...")
 
@@ -127,7 +128,7 @@ def readdata(spec, template):
         print("You must pass 2 files as input (and optionally the element to fit): ")
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
-        print("  or a phase (number of days since Vmax, min=-10 max=72) if using the meantemplate distributed with this package\n")        
+        print("  or a phase (number of days with respect to Vmax, min=-10 max=72, in increments of 2 days) if using the templates distributed with this package\n")        
         return [-1] * 7
     
     # reads in spectrum        
@@ -154,7 +155,7 @@ def readdata(spec, template):
         print("You must pass 2 files as input: ")
         print("- a spectrum file in .sav or .csv format")
         print("- a template spectrum file in .sav format ")
-        print("  or a phase (integer number of days) if using the meantemplate distributed with this package\n")
+        print("  or a phase (number of days with respect to Vmax, min=-10 max=72, in increments of 2 days) if using the templates distributed with this package\n")        
         return [-1] * 7
     
     # we restrict the range to 4400 9000 A to avoid contribuion from the bump 
@@ -378,7 +379,7 @@ def runMCMC(element, wlog_input, fmean_input,
     if file_save:
         f = open(outdir + "/" + file_save, 'w')
         f.write('region to find initial template fit region:' + str(x0) + '\n')
-        f.write("Mean acceptance fraction: {0:.3f} \n"
+        f.write("emcee Mean acceptance fraction: {0:.3f} \n"
                 .format(np.mean(sampler.acceptance_fraction)))
         f.write('uniform prior for v/1000 in km/s, sigma/10 in angstrom, ' +
                 'amplitude: ' + str(prior) + '\n')
@@ -407,7 +408,7 @@ def runMCMC(element, wlog_input, fmean_input,
 
         f.close()
 
-    print('Mean acceptance fraction: {0:.3f}'
+    print('emcee Mean acceptance fraction: {0:.3f}'
           .format(np.mean(sampler.acceptance_fraction)))
     print('{0:10} {1:15} {2:15} {3:5}  percentiles of marginalized distribution of model parameters'\
           .format(" ", "16th", "50th", "84th"))
@@ -434,7 +435,7 @@ def runMCMC(element, wlog_input, fmean_input,
 
 
 def conv(spec, template, element):
-    # fires off code to read in input files, fired off MCMC
+    # fires off code to read in input files, fires off MCMC
 
     print ("Working with element: ", element)
     # check that the element has all necessary input info
@@ -458,6 +459,7 @@ def conv(spec, template, element):
     except IOError:
         print("\n\n You must pass a .csv and a .sav file, or 2 .sav ")
         print("files or a file and a phase as input")
+        print("and optionally the element to fit (default Fe)")
         return -1
     if isinstance(wlog_input, int):
         return -1
