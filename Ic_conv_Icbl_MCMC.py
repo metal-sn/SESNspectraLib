@@ -490,7 +490,7 @@ $python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  0 Fe'''
     element = 'Fe'
     if len(sys.argv) == 1:
         # use default arguments for testing
-        print ("\n\n Hallo!\n\nThis is a test using SN PTF10qts at phase 0")
+        print ("\n\n Hello!\n\nThis is a test using SN PTF10qts at phase 0")
         obsSpec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
         templSpec = 'IcTemplates/meanspecIc_0.sav'
 
