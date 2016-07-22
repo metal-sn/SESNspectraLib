@@ -35,7 +35,7 @@ PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, f_std, sep_vel
 c_kms                 = 299792.47 ; speed of light in km/s
 vel_toolargeforSN_kms = 1.D5   ; Velocity limit for whose corresponding wavenumbers are not included in the fit 
                               ;as they are too large to be associated with SN features (see discussion in Appendix of Liu+16)
-width                 = 100  ; width in angstrom to calculate uncertainty arrary 
+width                 = 100  ; width in angstrom to calculate uncertainty array 
 
 ; convert to log(w) space
       w_ln=alog(w)                 
@@ -130,8 +130,8 @@ f_ft = f_bin_ft_smooth_inv
 print, num_bin
 print, n_elements(f_ft)
 
-; calculate uncertainty array 
-bin_size=fix(width/(w_ft[2]-w_ft[1])) ; window in number of bins
+; calculate uncertainty array by taking STDEV on running rolling mean of width window  "width" as defined above
+bin_size=fix(width/(w_ft[2]-w_ft[1])) ; width window in number of bins
 f_std=fltarr(num_bin)
 for j=bin_size/2, num_bin-bin_size/2-1 do begin
    f_std[j]=stddev(f_ft[j-bin_size/2:j+bin_size/2])
