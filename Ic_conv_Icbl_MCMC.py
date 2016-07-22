@@ -13,7 +13,7 @@ Arguments:
  - phase of the template spectrum (with respect to V max, in days, from -10 to 72, in increments of 2 day) 
    OR 
    full name of the template to be used (must be a .sav file in the subdirectory "/Ictemplates")
- - which line element to fit (optional. For now we have used and tested this code for Fe I 5169, 
+ - which line element to fit (optional. For now we have used and tested this code for Fe II 5169, 
  so the default will be 'Fe', but can be extended)
  
 The flattened Ic-bl spectrum file needs to contain the following variables:
@@ -33,8 +33,8 @@ with the *same variable names*.
 Output:
  an output directory is created (default ./outputs) where the following outputs are saved (see Appendix of Modjaz et al. 2016 for details):
 
- - a pickle file od the distribution of absorption veolcities, line wihdths, and the normalizatin parameter 
- - an ascii file with the distribution median , 0.15th, 2.5th, 16th, 50th, 84th, 97.5, 99.85th percentailes f the marginalized distribution of model parameters: (absorption velocity, line width, and normalization).
+ - a pickle file contains the  marginalized distribution of model parameters: (absorption veolcities, line widths, etc.)  
+ - an ascii file with the distribution median , 0.15th, 2.5th, 16th, 50th, 84th, 97.5, 99.85th percentailes of the marginalized distribution of model parameters: (absorption velocity, line width, etc.).
  - a plot of the fit
  - a plot of the marginalized distribution if the corner.py package is installed
  - a plot of the MCMC walkers, if requested.
