@@ -33,14 +33,14 @@ with the *same variable names*.
 Output:
  an output directory is created (default ./outputs) where the following outputs are saved (see Appendix of Modjaz et al. 2016 for details):
 
- - a pickle file contains the  marginalized distribution of model parameters: (absorption veolcity, line width, amplitude, wavelength range)  
- - an ascii file with the distribution median and 0.15th, 2.5th, 16th, 84th, 97.5, 99.85th percentailes of the marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range).
+ - a pickle file contains the  marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range)  
+ - an ascii file with the distribution median and 0.15th, 2.5th, 16th, 84th, 97.5, 99.85th percentiles of the marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range).
  - a plot of the fit
  - a plot of the marginalized distribution if the corner.py package is installed
  - a plot of the MCMC "walkers" if explicitly requested.
 
  Note: the initial values, prior of model parameters, and
- initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed, to modify the Fe fit pr to add fits for other elements.
+ initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed, to modify the Fe fit or to add fits for other elements.
 
 Author:
  Yuqian Liu, NYU 2016 yl1260@nyu.edu 
