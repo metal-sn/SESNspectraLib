@@ -3,8 +3,8 @@ __author__='Yuqian Liu yl1260@nyu.edu '
 # -*- coding: utf-8 -*-
 ##############################################################################
 '''
-Fits a template SN spectrum to an observed SN spectrum to measure spectral features
-that are blue-shifted and broadened with respect to the template
+Fits a template SN spectrum to an observed SN spectrum.
+Measures broadening and blue-shift of the SN features with respect to the template.
 
 
 Arguments:
@@ -14,14 +14,18 @@ Arguments:
    OR 
    full name of the template to be used (must be a .sav file in the subdirectory "/Ictemplates")
  - which line element to fit (optional. For now we have used and tested this code for Fe II 5169, 
- so the default will be 'Fe', but can be extended)
+ so the default is 'Fe', but can be extended)
  
 The flattened Ic-bl spectrum file needs to contain the following variables:
 wavelog_input: wavelength in Angstrom
-flatflux_input: flattened (i.e., continuum-removed) spectrum, can be produced with snidflat.pro (as mentioned in the README) or other methods 
-flatflux_input_sm: smoothed flattened spectrum, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods 
-flatflux_err_input: uncertainty array, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods
-DISCLAIMER: our code has been tested for spectra produced by snidflat.pro and SNspecFFTsmooth.pro, not for any other methods
+flatflux_input: flattened (i.e., continuum-removed) spectrum.
+flatflux_input_sm: smoothed flattened spectrum.
+flatflux_err_input: uncertainty array
+
+ The flattened spectra can be produced with snidflat.pro 
+ (https://people.lam.fr/blondin.stephane/software/snid/index.html#Download in the snid_pro.tgz package), using the default values.  
+ The smoothed flattened spectra and uncertainty arrays can be produced with SNspecFFTsmooth.pro (released in this repository). 
+ DISCLAIMER: our code has been tested for spectra produced by snidflat.pro and SNspecFFTsmooth.pro, not for any other methods
 
 The file format is as follows:
 If the spectrum is a .csv file, the .csv columns must contain the above four variables
@@ -31,13 +35,14 @@ with the *same variable names*.
 
 
 Output:
- an output directory is created (default ./outputs) where the following outputs are saved (see Appendix of Modjaz et al. 2016 for details):
+ an output directory is created (default ./outputs) where the following outputs are saved:
 
  - a pickle file contains the  marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range)  
- - an ascii file with the distribution median and 0.15th, 2.5th, 16th, 84th, 97.5, 99.85th percentiles of the marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range).
- - a plot of the fit
+ - an ASCII file with the distribution median and 0.15th, 2.5th, 16th, 84th, 97.5, 99.85th percentiles of the marginalized distribution of model parameters: 
+        (absorption velocity, line width, amplitude, wavelength range).
+ - a plot of the input spectrum and fit template
  - a plot of the marginalized distribution if the corner.py package is installed
- - a plot of the MCMC "walkers" if explicitly requested.
+ - a plot of the MCMC "walkers" if explicitly requested (see emcee.py documentation).
 
 The code optimizes over the following physical paramters:
  - blue-shift (velocity) of the spectral feature
@@ -47,8 +52,10 @@ and the following model parameters:
  - wavelength region used for the fit as an offset from the peak-to-peak width of the feature as calculated from the smooth spectrum
 
  Note: the initial values, prior of model parameters, and
- initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed, to modify the Fe fit or to add fits for other elements.
-
+ initial template fitting region are specified in the element.Dicts.py file, 
+ and can be changed as needed, to modify the Fe fit or to add parameters for other elements.
+ For a more detail explanation of the code products see Appendix of Modjaz et al. 2016.
+ 
 Author:
  Yuqian Liu, NYU 2016 yl1260@nyu.edu 
  Federica Bianco, NYU 2016 fb55@nyu.edu
@@ -76,8 +83,9 @@ CORNER = True
 try:
     import corner
 except ImportError:
-    print ('''You seem to be missing package corner (https://github.com/dfm/corner.py). 
-    We recommend you exit and install it, but if you wish you can type 'yes' to continue without the package. However you will not be able to plot important diagnostics''')
+    print ('''\n\nWARNING: You seem to be missing package corner (https://github.com/dfm/corner.py). 
+    We recommend you exit and install it, but if you wish you can type 'yes' to continue without the package. 
+    However you will not be able to plot important diagnostics''')
     if raw_input().startswith('y'):
         CORNER = False
         pass
@@ -489,7 +497,7 @@ $python Ic_conv_Icbl_MCMC.py 10qts_20100815_Lick_3-m_v1-z.flm-flat.sav  0 Fe'''
     element = 'Fe'
     if len(sys.argv) == 1:
         # use default arguments for testing
-        print ("\n\n Hallo!\n\nThis is a test using SN PTF10qts at phase 0")
+        print ("\n\n Hello!\n\nThis is a test using SN PTF10qts at phase 0")
         obsSpec = '10qts_20100815_Lick_3-m_v1-z.flm-flat.sav'
         templSpec = 'IcTemplates/meanspecIc_0.sav'
 
