@@ -11,7 +11,7 @@ At this time two pieces of code are provided:
 NOTE: When not specified otherwise (e.g. Ic_conv_Icbl) our code can be used on any medium resolution spectra of SNe of any type, although it is designed for and tested on SESN.
 
 ### Examples
-- The following chunk of IDL code is an example of **SNspecFFTsmooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L):
+1) The following chunk of IDL code is an example of **SNspecFFTsmooth.pro** in IDL, which will produce the top panel of Figure 17 in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L):
 ```
 IDL> readcol, 'sn2004gq-20041212-z-bl.flm', w, f
 IDL> SNspecFFTsmooth, w, f, 1000, w_ft, f_ft, f_std, sep_vel
@@ -20,7 +20,10 @@ IDL> oplot, w_ft, f_ft, color=250
 ```
 ![alt tag](https://github.com/nyusngroup/SESNspectraLib/blob/master/example_IDL_plot.png)
 
-- The following chunk of Python is an example of **Ic_conv_Icbl_MCMC.py** in Python, which will produce: 
+2) The following chunk of Python is an example of **Ic_conv_Icbl_MCMC.py** in Python.
+Note that the input spectra of **Ic_conv_Icbl_MCMC.py** are flattened by **snidflat.pro** (using the default values) in **snid_pro.tgz** which can be downloaded via [Stephane Blondin's webpage](https://people.lam.fr/blondin.stephane/software/snid/index.html#Download).
+
+In the following example, the input is "10qts_20100815_Lick_3-m_v1-z.flm-flat.csv" (see header in the code for format) and the code produces the following outputs:
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.dat**, a text file that contains initial template fit region, mean acceptance fraction, initial values for parameters, and 16th, 50th, 84th percentiles of marginalized distribution of model parameters.
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.p**, a pickle file that contains marginalized distribution of model parameters.
 - **10qts_20100815_Lick_3-m_v1-z.flm-flat.sav-Fe.pdf**, a PDF file that contains template fit plot
@@ -51,7 +54,7 @@ minimization took 8.29712605476 seconds
 The main plot out will look like this:
 ![alt tag](https://raw.githubusercontent.com/nyusngroup/SESNspectraLib/master/10qts_20100815_Lick_3-m_v1-z.flm-flat-Fe.png)
 
-Note that the input spectra of **Ic_conv_Icbl_MCMC.py** are flattened by **snidflat.pro** (using the default values) in **snid_pro.tgz** which can be downloaded via [Stephane Blondin's webpage](https://people.lam.fr/blondin.stephane/software/snid/index.html#Download).
+
 
 ###Required packages:
 This code makes use of several default python packages, including [NumPy](http://www.numpy.org/), [SciPy](https://www.scipy.org/), [Matplotlib](http://matplotlib.org/) and [pickle](https://docs.python.org/2/library/pickle.html), and a few additional, less common, packages:
