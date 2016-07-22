@@ -1,6 +1,6 @@
 # SESNspectraLib
 
-This repository contains code that was used in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L) and [Modjaz et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv150907124M) to process spectra of Stripped Envelope Supenova (SESNe),i.e., SNe of types IIb, Ib, Ic and Ic-bl. 
+This repository contains code that was used in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L) and [Modjaz et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv150907124M) to process spectra of Stripped Envelope Supenova (SESNe), i.e., SNe of types IIb, Ib, Ic and Ic-bl. 
 Common issues encountered in using SN spectral data include missing uncertainties and inhomogeneous measurements of the velocity for differen SN types. Our library intends to address these issues. 
 
 At this time two pieces of code are provided: 
