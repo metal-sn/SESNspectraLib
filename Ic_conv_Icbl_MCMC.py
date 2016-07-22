@@ -3,8 +3,8 @@ __author__='Yuqian Liu yl1260@nyu.edu '
 # -*- coding: utf-8 -*-
 ##############################################################################
 '''
-Fits a template SN spectrum to an observed SN spectrum to measure spectral features
-that are blue-shifted and broadened with respect to the template
+Fits a template SN spectrum to an observed SN spectrum.
+Measures broadening and blue-shift of the SN features with respect to the template.
 
 
 Arguments:
@@ -14,14 +14,17 @@ Arguments:
    OR 
    full name of the template to be used (must be a .sav file in the subdirectory "/Ictemplates")
  - which line element to fit (optional. For now we have used and tested this code for Fe II 5169, 
- so the default will be 'Fe', but can be extended)
+ so the default is 'Fe', but can be extended)
  
 The flattened Ic-bl spectrum file needs to contain the following variables:
 wavelog_input: wavelength in Angstrom
-flatflux_input: flattened (i.e., continuum-removed) spectrum, can be produced with snidflat.pro (as mentioned in the README) or other methods 
-flatflux_input_sm: smoothed flattened spectrum, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods 
-flatflux_err_input: uncertainty array, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods
-DISCLAIMER: our code has been tested for spectra produced by snidflat.pro and SNspecFFTsmooth.pro, not for any other methods
+flatflux_input: flattened (i.e., continuum-removed) spectrum.
+flatflux_input_sm: smoothed flattened spectrum.
+flatflux_err_input: uncertainty array
+
+ The flattened spectra can be produced with snidflat.pro (https://people.lam.fr/blondin.stephane/software/snid/index.html#Download in the snid_pro.tgz package), using the default values.  
+ The smoothed flattened spectra and uncertainty arrays can be produced with SNspecFFTsmooth.pro (released in this repository). 
+ DISCLAIMER: our code has been tested for spectra produced by snidflat.pro and SNspecFFTsmooth.pro, not for any other methods
 
 The file format is as follows:
 If the spectrum is a .csv file, the .csv columns must contain the above four variables
