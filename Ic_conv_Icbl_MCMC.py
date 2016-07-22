@@ -22,7 +22,8 @@ flatflux_input: flattened (i.e., continuum-removed) spectrum.
 flatflux_input_sm: smoothed flattened spectrum.
 flatflux_err_input: uncertainty array
 
- The flattened spectra can be produced with snidflat.pro (https://people.lam.fr/blondin.stephane/software/snid/index.html#Download in the snid_pro.tgz package), using the default values.  
+ The flattened spectra can be produced with snidflat.pro 
+ (https://people.lam.fr/blondin.stephane/software/snid/index.html#Download in the snid_pro.tgz package), using the default values.  
  The smoothed flattened spectra and uncertainty arrays can be produced with SNspecFFTsmooth.pro (released in this repository). 
  DISCLAIMER: our code has been tested for spectra produced by snidflat.pro and SNspecFFTsmooth.pro, not for any other methods
 
@@ -34,17 +35,20 @@ with the *same variable names*.
 
 
 Output:
- an output directory is created (default ./outputs) where the following outputs are saved (see Appendix of Modjaz et al. 2016 for details):
+ an output directory is created (default ./outputs) where the following outputs are saved:
 
  - a pickle file contains the  marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range)  
- - an ascii file with the distribution median and 0.15th, 2.5th, 16th, 84th, 97.5, 99.85th percentiles of the marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range).
- - a plot of the fit
+ - an ASCII file with the distribution median and 0.15th, 2.5th, 16th, 84th, 97.5, 99.85th percentiles of the marginalized distribution of model parameters: 
+        (absorption velocity, line width, amplitude, wavelength range).
+ - a plot of the input spectrum and fit template
  - a plot of the marginalized distribution if the corner.py package is installed
- - a plot of the MCMC "walkers" if explicitly requested.
+ - a plot of the MCMC "walkers" if explicitly requested (see emcee.py documentation).
 
  Note: the initial values, prior of model parameters, and
- initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed, to modify the Fe fit or to add fits for other elements.
-
+ initial template fitting region are specified in the element.Dicts.py file, 
+ and can be changed as needed, to modify the Fe fit or to add parameters for other elements.
+ For a more detail explanation of the code products see Appendix of Modjaz et al. 2016.
+ 
 Author:
  Yuqian Liu, NYU 2016 yl1260@nyu.edu 
  Federica Bianco, NYU 2016 fb55@nyu.edu
