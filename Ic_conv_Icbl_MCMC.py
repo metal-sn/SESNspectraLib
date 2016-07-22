@@ -18,15 +18,15 @@ Arguments:
  
 The flattened Ic-bl spectrum file needs to contain the following variables:
 wavelog_input: wavelength in Angstrom
-flatflux_input: flattened (i.e., continuum-removed) spectrum, can be produced with snidflat.pro (as mentioned in README) or other methods 
+flatflux_input: flattened (i.e., continuum-removed) spectrum, can be produced with snidflat.pro (as mentioned in the README) or other methods 
 flatflux_input_sm: smoothed flattened spectrum, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods 
 flatflux_err_input: uncertainty array, can be produced with SNspecFFTsmooth.pro (released in this repository) or other methods
 DISCLAIMER: our code has been tested for spectra produced by snidflat.pro and SNspecFFTsmooth.pro, not for any other methods
 
 The file format is as follows:
-If a spectrum is in .csv file, the .csv columns must contain the above four variables
-and the *same variable names* must be included as header;
-If a spectrum is in .sav file, the stored variables must contain the above four variables
+If the spectrum is a .csv file, the .csv columns must contain the above four variables
+and the *same variable names* must be included as header (see .csv example in the repo);
+If the spectrum is a .sav file, the stored variables must contain the above four variables
 with the *same variable names*.
 
 
@@ -34,13 +34,13 @@ Output:
  an output directory is created (default ./outputs) where the following outputs are saved (see Appendix of Modjaz et al. 2016 for details):
 
  - a pickle file contains the  marginalized distribution of model parameters: (absorption veolcity, line width, amplitude, wavelength range)  
- - an ascii file with the distribution median , 0.15th, 2.5th, 16th, 50th, 84th, 97.5, 99.85th percentailes of the marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range).
+ - an ascii file with the distribution median and 0.15th, 2.5th, 16th, 84th, 97.5, 99.85th percentailes of the marginalized distribution of model parameters: (absorption velocity, line width, amplitude, wavelength range).
  - a plot of the fit
  - a plot of the marginalized distribution if the corner.py package is installed
- - a plot of the MCMC walkers, if requested.
+ - a plot of the MCMC "walkers" if explicitly requested.
 
- Note: initial values and prior of model parameters and region to find
- initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed.
+ Note: the initial values, prior of model parameters, and
+ initial template fitting region are specified in the element.Dicts.py file, and can be changed as needed, to modify the Fe fit pr to add fits for other elements.
 
 Author:
  Yuqian Liu, NYU 2016 yl1260@nyu.edu 
