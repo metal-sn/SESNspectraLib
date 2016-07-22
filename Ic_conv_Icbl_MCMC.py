@@ -76,8 +76,9 @@ CORNER = True
 try:
     import corner
 except ImportError:
-    print ('''You seem to be missing package corner (https://github.com/dfm/corner.py). 
-    We recommend you exit and install it, but if you wish you can type 'yes' to continue without the package. However you will not be able to plot important diagnostics''')
+    print ('''\n\nWARNING: You seem to be missing package corner (https://github.com/dfm/corner.py). 
+    We recommend you exit and install it, but if you wish you can type 'yes' to continue without the package. 
+    However you will not be able to plot important diagnostics''')
     if raw_input().startswith('y'):
         CORNER = False
         pass
