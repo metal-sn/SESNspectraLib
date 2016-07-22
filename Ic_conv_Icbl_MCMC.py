@@ -75,7 +75,7 @@ import numpy as np
 import scipy
 from distutils.version import StrictVersion
 if StrictVersion(scipy.__version__) < StrictVersion('0.10.0'):
-    print ("you must have a scipy version >=0.10 to read in the IDL .sav template")
+    print ("\nERROR: you must have a scipy version >=0.10 to read in the IDL .sav template")
     sys.exit()
 from scipy.ndimage import filters
 from scipy.signal import gaussian
