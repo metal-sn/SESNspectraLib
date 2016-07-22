@@ -65,20 +65,29 @@ Author:
 
 import sys
 import os
+
 import time
 import emcee
 import pickle as pkl
 import numpy as np
+
+#check version of scipy
+import scipy
+from distutils.version import StrictVersion
+if StrictVersion(scipy.__version__) < StrictVersion('0.10.0'):
+    print ("you must have a scipy version >=0.10 to read in the IDL .sav template")
+    sys.exit()
+from scipy.ndimage import filters
+from scipy.signal import gaussian
+from scipy.interpolate import interp1d
+from scipy.io.idl import readsav
+
 import matplotlib as mpl
 mpl.use('Agg')
 import pylab as pl
 from matplotlib import  rcParams
 from matplotlib.ticker import MultipleLocator
 
-from scipy.ndimage import filters
-from scipy.signal import gaussian
-from scipy.interpolate import interp1d
-from scipy.io.idl import readsav
 
 CORNER = True
 try:
