@@ -1,4 +1,4 @@
-PRO SNspecFFTsmooth, w, f, cut_vel, w_ft, f_ft, f_std, sep_vel
+PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 
 ; For Release: Version 1.0, July 2016
 ; NAME:
@@ -124,27 +124,26 @@ width                 = 100  ; width in angstrom to calculate uncertainty array
       ; take the inverse Fourier transform 
       f_bin_ft_smooth_inv=float(fft(f_bin_ft_smooth,1))
       
-; output wavelength and FFT-smoothed flux
+; wavelength and FFT-smoothed flux
 w_ft = exp(w_ln_bin)
-f_ft = f_bin_ft_smooth_inv
-print, num_bin
-print, n_elements(f_ft)
+f_ft = INTERPOL(f_bin_ft_smooth_inv, w_ft, w) 
 
 ; calculate uncertainty array by calculating STDDEV within a rolling window (that has a width "width" as defined above).
-bin_size=fix(width/(w_ft[2]-w_ft[1])) ; width window in number of bins
-f_std=fltarr(num_bin)
-for j=bin_size/2, num_bin-bin_size/2-1 do begin
-   f_std[j]=stddev(f_ft[j-bin_size/2:j+bin_size/2])
+f_resi=f-f_ft
+bin_size=fix(width/(w[1]-w[0])) ; width window in number of bins
+f_std=fltarr(n_elements(f_resi))
+for j=bin_size/2, num-bin_size/2-1 do begin
+   f_std[j]=stddev(f_resi[j-bin_size/2:j+bin_size/2])
 endfor
 ; for data points near edges
 for j=1, bin_size/2-1 do begin
-   f_std[j]=stddev(f_ft[0:2*j])
+   f_std[j]=stddev(f_resi[0:2*j])
 endfor
-for j=num_bin-bin_size/2, num_bin-2 do begin
-   f_std[j]=stddev(f_ft[2*j-num_bin+1:num_bin-1])
+for j=num-bin_size/2, num-2 do begin
+   f_std[j]=stddev(f_resi[2*j-num+1:num-1])
 endfor
 ; for the first and the last data points
-f_std[0]=abs(f_ft[0])
-f_std[num_bin-1]=abs(f_ft[num_bin-1])
+f_std[0]=abs(f_resi[0])
+f_std[num-1]=abs(f_resi[num-1])
 
 END
