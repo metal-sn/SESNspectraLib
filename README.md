@@ -14,9 +14,9 @@ NOTE: When not specified otherwise (e.g. Ic_conv_Icbl) our code can be used on a
 1) The following chunk of IDL code shows how to run **SNspecFFTsmooth.pro** to produce the top panel of Figure 17 in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L):
 ```
 IDL> readcol, 'sn2004gq-20041212-z-bl.flm', w, f
-IDL> SNspecFFTsmooth, w, f, 1000, w_ft, f_ft, f_std, sep_vel
+IDL> SNspecFFTsmooth, w, f, 1000, f_ft, f_std, sep_vel
 IDL> plot, w, f
-IDL> oplot, w_ft, f_ft, color=250
+IDL> oplot, w, f_ft, color=250
 ```
 ![alt tag](https://github.com/nyusngroup/SESNspectraLib/blob/master/example_IDL_plot.png)
 
