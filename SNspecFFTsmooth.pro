@@ -15,7 +15,6 @@ PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 ;              
 ;              
 ; OUTPUTS:
-;   w_ft = wavelength corresponding to FFT smoothed flux
 ;   f_ft = FFT smoothed flux
 ;   f_std = uncertainty array
 ;   sep_vel = velocity as determined in this code to separate SN spectral signal from the noise (in km/s)
