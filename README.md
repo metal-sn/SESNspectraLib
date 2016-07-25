@@ -42,13 +42,12 @@ reading inputs...
 running convolution...
 
 
-Element: Fe, Phase: 0, input spectrum: 10qts_20100815_Lick_3-m_v1-z.flm-flat.csv
-emcee Mean acceptance fraction: 0.557
+emcee Mman acceptance fraction: 0.576
            16th            50th            84th   percentiles of marginalized distribution of model parameters
-         10.978          11.269          11.545   BLUE-SHIFT v/1000 in km/s
-          4.076           4.459           4.822   BROADENING sigma/1000 in km/s
-          1.289           1.401           1.497   NORMALIZATION amplitude
-          0.602           2.500           6.661   WAVELENGTH RANGE ADJUSTMENT from 470.19 in A
+         11.010          11.297          11.560   BLUE-SHIFT v/1000 in km/s
+          4.099           4.471           4.792   BROADENING sigma/1000 in km/s
+          1.302           1.400           1.486   NORMALIZATION amplitude
+          0.731           1.981           5.907   WAVELENGTH RANGE ADJUSTMENT from 470.19 in A
 minimization took 9.92309498787 seconds
 
 ```
