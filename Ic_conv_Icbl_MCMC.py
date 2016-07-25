@@ -225,7 +225,7 @@ def fittemplate(p, element, fmean_input, wlog_input,
         ax.plot(lx_new, f2, 'r', linewidth=4, label="Fitted SN Ic template")
         ax.text(4500, -0.4, r"$v$=%.0f km s$^{-1}$   $\sigma$=%.0f km s$^{-1}$"
                 % (-v, sig * 400), fontsize=25)
-        ax.text(4500, -0.5, r"$a$=%.1f   $\Delta$$w$=%.0f $\AA$" %
+        ax.text(4500, -0.5, r"$a$=%.1f   $\Delta$$w$=%.1f $\AA$" %
                 (amplitude, w_range), fontsize=25)
         ax.text(5500, 0.3, r"$\chi^2_r$=%.1f" % (chisq), fontsize=25)
         ax.set_xlabel("Rest Wavelength ($\AA$)", fontsize=25)
