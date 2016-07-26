@@ -1,3 +1,5 @@
+;DOI: 10.5281/zenodo.58767
+
 PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 
 ; For Release: Version 1.0, July 2016
