@@ -1,3 +1,5 @@
+[![DOI](https://zenodo.org/badge/22593/nyusngroup/SESNspectraLib.svg)](https://zenodo.org/badge/latestdoi/22593/nyusngroup/SESNspectraLib)
+
 # SESNspectraLib
 
 This repository contains code that was used in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L) and [Modjaz et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv150907124M) to process spectra of Stripped Envelope Supenova (SESNe), i.e., SNe of types IIb, Ib, Ic and Ic-bl. 
