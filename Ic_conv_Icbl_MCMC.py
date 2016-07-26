@@ -1,3 +1,5 @@
+#DOI: 10.5281/zenodo.58767
+
 from __future__ import print_function
 __author__='Yuqian Liu yl1260@nyu.edu '
 # -*- coding: utf-8 -*-
