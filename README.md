@@ -64,6 +64,7 @@ This code makes use of several default python packages, including [NumPy](http:/
 - [emcee](http://dan.iel.fm/emcee/current/)
 - [corner](https://github.com/dfm/corner.py) (optional, but recommanded: it generates plots of the marginalized distributions as visual diagnostics of your fit)
 
+###Acknowledgement:
 
 If you use code in this repository, please <b>acknowledge</b> this work by including in your paper:
 
