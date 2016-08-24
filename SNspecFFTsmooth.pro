@@ -27,7 +27,7 @@ PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 ; LINEAR.pro (https://people.ok.ubc.ca/erosolo/idl/lib/linear_fit.pro)
 ; 
 ; WRITTEN BY: 
-; Yuqian Liu and the NYUSNgroup (https://github.com/nyusngroup/SESNspectraLib/) and released under DOI XXX
+; Yuqian Liu and the NYUSNgroup (https://github.com/nyusngroup/SESNspectraLib/) and released under DOI 10.5281/zenodo.58767
 
 !EXCEPT=2 ;allows IDL to report on the program context in which the error occurred, 
           ;along with the line number in the procedure.
@@ -102,7 +102,7 @@ width                 = 100  ; width in angstrom to calculate uncertainty array
       ; if there is still no intersection after trying the above initial guess values (very rare), then return and exit. However,
       ; the user is of course welcome to modify the initial guesses above for their cases by modifying the code ...
       if max(delta) lt 0 then begin
-         print, 'Exit: returning to command line - user is welcome to try other guess value for power law fit my modifying the code'
+         print, 'Exit: returning to command line - user is welcome to try other guess value for power law fit by modifying the code'
          return
       endif
 
