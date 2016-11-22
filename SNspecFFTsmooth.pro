@@ -23,8 +23,8 @@ PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 ;
 ; DEPENDENT PROCEDURE:
 ; binspec.pro (released as part of this repo)
-; POWERLAW.pro (https://people.ok.ubc.ca/erosolo/idl/lib/powerlaw_fit.pro)
-; LINEAR.pro (https://people.ok.ubc.ca/erosolo/idl/lib/linear_fit.pro)
+; POWERLAW_FIT.pro (https://people.ok.ubc.ca/erosolo/idl/lib/powerlaw_fit.pro)
+; LINEAR_FIT.pro (https://people.ok.ubc.ca/erosolo/idl/lib/linear_fit.pro)
 ; Meron's Library (email YL1260@nyu.edu to get it, if it's not available online)
 ;
 ; WRITTEN BY: 
