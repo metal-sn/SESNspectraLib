@@ -45,11 +45,11 @@ width                 = 100  ; width in angstrom to calculate uncertainty array
       binsize = (w_ln[num-1]-w_ln[num-2])
       f = f/(moment(f))[0]
       f_bin = binspec(w_ln,f,min(w_ln),max(w_ln),binsize,w_ln_bin) ;bin to same sampling interval in log(w) space
-      f_bin=f_bin(where(f_bin NE 0))
-      w_ln_bin=w_ln_bin(where(f_bin NE 0))
+      ;w_ln_bin=w_ln_bin(where(f_bin NE 0))
+      ;f_bin=f_bin(where(f_bin NE 0))
       num_bin=n_elements(f_bin)
 
-; take flourier transform
+; take fourier transform
       f_bin_ft=fft(f_bin,-1)*num_bin
 ; calculate frequency
       X = (FINDGEN((num_bin - 1)/2) + 1)
