@@ -109,7 +109,7 @@ Liu et al. (2016):
  	primaryClass = "astro-ph.HE",
  	keywords = {methods: data analysis, supernovae: general, supernovae: individual: SNe 1993J, 2005bf, 2005E, 2011dh},
      	year = 2016,
-    month = aug,
+    	month = aug,
    	volume = 827,
       	eid = {90},
     	pages = {90},
