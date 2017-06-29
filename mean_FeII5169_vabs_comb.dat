@@ -1,4 +1,4 @@
-template_name		num_spec/SN   template_vel    mean_vel_err	(= diversity of vabs =weighted std of all measured vabs in SN Ic that went into making the Ic template)
+template_name		num_spec/SN   template_vel [in km/s]   mean_vel_err (= diversity of vabs=weighted std of all measured vabs in SN Ic that went into making the Ic template)
 meanspecIc_-10.sav         5            -9502.2       4820.11
 meanspecIc_-8.sav          8          -10230.7        3934.13
 meanspecIc_-6.sav         10           -9717.4        4549.85
