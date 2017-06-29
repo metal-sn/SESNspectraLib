@@ -11,14 +11,14 @@ Measures broadening and blue-shift of the SN features with respect to the templa
 
 Arguments:
 
- - flattened Ic-bl spectrum (see below) in .csv or .sav IDL format
+ - flattened input spectrum of either Ic-bl or SLSN Ic (see below) in .csv or .sav IDL format
  - phase of the template spectrum (with respect to V max, in days, from -10 to 72, in increments of 2 days) 
    OR 
    full name of the template to be used (must be a .sav file in the subdirectory "/Ictemplates")
  - which line element to fit (optional. For now we have used and tested this code for Fe II 5169, 
- so the default is 'Fe', but can be extended)
+ so the default is 'Fe', but can be extended to other lines)
  
-The flattened Ic-bl spectrum file needs to contain the following variables:
+The flattened input spectrum file of Ic-bl or SLSLN Ic needs to contain the following variables:
 wavelog_input: wavelength in Angstrom
 flatflux_input: flattened (i.e., continuum-removed) spectrum.
 flatflux_input_sm: smoothed flattened spectrum.
@@ -58,7 +58,7 @@ and the following model parameters:
  and can be changed as needed, to modify the Fe fit or to add parameters for other elements.
  For a more detail explanation of the code products see Appendix of Modjaz et al. 2016.
  
-Author:
+Authors:
  Yuqian Liu, NYU 2016 yl1260@nyu.edu 
  Federica Bianco, NYU 2016 fb55@nyu.edu
  Maryam Modjaz, NYU 2016 mmodjaz@nyu.edu
