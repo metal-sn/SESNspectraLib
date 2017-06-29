@@ -426,12 +426,12 @@ def runMCMC(element, wlog_input, fmean_input,
 
     # 16th, 50th, 84th percentiles of the velocity/1000
     pargs = np.percentile(sampler.chain[:, :, 0], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BLUE-SHIFT v/1000 in km/s'\
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BLUE-SHIFT v/1000 in km/s WITH RESPECT to Ic template at specified phase'\
         .format(pargs[0], pargs[1], pargs[2]))
     
     # 16th, 50th, 84th percentiles of the sigma/10000 in km/s
     pargs = np.percentile(sampler.chain[:, :, 1], [16, 50, 84])
-    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BROADENING sigma/1000 in km/s'\
+    print ('{0:15.3f} {1:15.3f} {2:15.3f}   BROADENING sigma/1000 in km/s WITH RESPECT to Ic template at specified phase'\
         .format(pargs[0], pargs[1], pargs[2]))
 
     # 16th, 50th, 84th percentiles of the amplitude
