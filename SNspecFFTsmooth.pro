@@ -13,7 +13,8 @@ PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 ;   w = original wavelength, in angstrom (A)
 ;   f = original flux, in ergs/s/cm^2/A 
 ;   cut_vel = velocity below which we assume that velocities are inconsistent with the velocity of SN spectral 
-;             features, in km/s, we find that 1000 km/s is a good working value for our data sets of SESNe (in Modjaz+16, Liu+16)
+;             features, in km/s, we find that 1000 km/s is a good working value for our data sets of SESNe (in Modjaz+16, Liu+16) 
+;             and 3000 km/s for SNe Ic-bl and SLSNe Ic (in Modjaz+16, Liu, Modjaz & Bianco 2017).
 ;              
 ;              
 ; OUTPUTS:
