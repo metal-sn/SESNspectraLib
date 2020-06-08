@@ -1,6 +1,6 @@
 ;DOI: 10.5281/zenodo.58767
 
-PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
+PRO SNspecFFTsmooth, w, f_physical, cut_vel, f_ft, f_std, sep_vel
 
 ; For Release: Version 1.0, July 2016
 ; NAME:
@@ -8,17 +8,17 @@ PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 ; PURPOSE:
 ;    To smooth SN medium resolution spectrum by separating SN signal from noise in Fourier space
 ; CALLING SEQUENCE:
-;   FFT_smooth, w, f, cut_vel, w_ft, f_ft, sep_vel
+;   FFT_smooth, w, f_physical, cut_vel, w_ft, f_ft, sep_vel
 ; INPUTS:
 ;   w = original wavelength, in angstrom (A)
-;   f = original flux, in ergs/s/cm^2/A 
+;   f_physical = original flux, in ergs/s/cm^2/A 
 ;   cut_vel = velocity below which we assume that velocities are inconsistent with the velocity of SN spectral 
 ;             features, in km/s, we find that 1000 km/s is a good working value for our data sets of SESNe (in Modjaz+16, Liu+16) 
 ;             and 3000 km/s for SNe Ic-bl and SLSNe Ic (in Modjaz+16, Liu, Modjaz & Bianco 2017).
 ;              
 ;              
 ; OUTPUTS:
-;   f_ft = FFT smoothed flux
+;   f_ft = FFT smoothed flux in erg/s/cm^2/A
 ;   f_std = uncertainty array
 ;   sep_vel = velocity as determined in this code to separate SN spectral signal from the noise (in km/s)
 ;
@@ -26,7 +26,7 @@ PRO SNspecFFTsmooth, w, f, cut_vel, f_ft, f_std, sep_vel
 ; binspec.pro (released as part of this repo)
 ; POWERLAW_FIT.pro (https://people.ok.ubc.ca/erosolo/idl/lib/powerlaw_fit.pro)
 ; LINEAR_FIT.pro (https://people.ok.ubc.ca/erosolo/idl/lib/linear_fit.pro)
-; Meron's Library (email mmodjaz@nyu.edu to get it, if it's not available online)
+; Meron's Library (email YL1260@nyu.edu to get it, if it's not available online)
 ;
 ; WRITTEN BY: 
 ; Yuqian Liu and the NYUSNgroup (https://github.com/nyusngroup/SESNspectraLib/) and released under DOI 10.5281/zenodo.58767
@@ -42,9 +42,12 @@ width                 = 100  ; width in angstrom to calculate uncertainty array
 
 ; convert to log(w) space
       w_ln=alog(w)                 
+      print, w_ln(0:20)
       num=n_elements(w_ln)
       binsize = (w_ln[num-1]-w_ln[num-2])
-      f = f/(moment(f))[0]
+      print, binsize
+      f_mean = (moment(f_physical))[0]
+      f = f_physical/(moment(f_physical))[0]
       f_bin = binspec(w_ln,f,min(w_ln),max(w_ln),binsize,w_ln_bin) ;bin to same sampling interval in log(w) space
       ;w_ln_bin=w_ln_bin(where(f_bin NE 0))
       ;f_bin=f_bin(where(f_bin NE 0))
@@ -148,5 +151,8 @@ endfor
 ; for the first and the last data points
 f_std[0]=abs(f_resi[0])
 f_std[num-1]=abs(f_resi[num-1])
+
+f_ft = f_ft * f_mean
+f_std = f_std * f_mean
 
 END
