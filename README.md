@@ -12,6 +12,9 @@ At this time two pieces of code are provided:
 
 NOTE: When not specified otherwise (e.g. Ic_conv_Icbl) our code can be used on any medium resolution spectra of SNe of any type, although it is designed for and tested on SESN and SLSNe Ic.
 
+### IDL Libraries
+The Meron IDL library can be found publicly available [here.](https://millenia.cars.aps.anl.gov/software/idl/index.html)
+
 ### Examples
 1) The following chunk of IDL code shows how to run **SNspecFFTsmooth.pro** to produce the top panel of Figure 17 in [Liu et al. (2016)](http://adsabs.harvard.edu/abs/2015arXiv151008049L):
 ```
